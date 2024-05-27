@@ -12,14 +12,14 @@ CREATE TABLE [role] (
 );
 GO
 
---Which ones need to be unique here?
---I omitted board key, its in board
 CREATE TABLE project (
 	project_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	project_name VARCHAR(255) NOT NULL,
 	access_user VARCHAR(255) NOT NULL,
 	access_key VARCHAR(255) NOT NULL,
-	jira_link VARCHAR(255) NOT NULL UNIQUE
+	jira_link VARCHAR(255) NOT NULL UNIQUE,
+	git_link VARCHAR(255) UNIQUE,
+	confluence_link VARCHAR(255) UNIQUE
 );
 GO
 
@@ -43,22 +43,5 @@ CREATE TABLE board (
 	board_name VARCHAR(255) NOT NULL,
     board_key VARCHAR(255) NOT NULL,
 	CONSTRAINT fk_board_project FOREIGN KEY (project_id) REFERENCES project(project_id)
-);
-GO
-
---unique on description?
-CREATE TABLE link_type (
-    link_type_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	[description] VARCHAR(255) NOT NULL
-);
-GO
-
-CREATE TABLE link (
-    link_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-    link_type_id INT NOT NULL,
-	project_id INT NOT NULL,
-	link_url VARCHAR(255) NOT NULL,
-	CONSTRAINT fk_link_project FOREIGN KEY (project_id) REFERENCES project(project_id),
-	CONSTRAINT fk_link_type FOREIGN KEY (link_type_id) REFERENCES link_type(link_type_id)
 );
 GO
