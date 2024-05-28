@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ProjectGrid from '../components/project-grid/project-grid'
+import ProjectContainer from '../components/projects-container/projects-container'
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 import '../App.css'
@@ -8,7 +8,7 @@ function HomePage() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <div className='page'>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -29,9 +29,9 @@ function HomePage() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <a href='/login'><ProjectGrid></ProjectGrid></a>
+      <ProjectContainer></ProjectContainer>
       
-    </>
+    </div>
   )
 }
 
