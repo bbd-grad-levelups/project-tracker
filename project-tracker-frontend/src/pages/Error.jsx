@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import ProjectGrid from '../components/project-grid/project-grid'
 import '../App.css'
 
 function ErrorPage() {
@@ -19,7 +18,6 @@ function ErrorPage() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <ProjectGrid></ProjectGrid>
     </>
   )
 }
