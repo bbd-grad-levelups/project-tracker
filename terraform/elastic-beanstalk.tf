@@ -35,8 +35,12 @@ resource "aws_elastic_beanstalk_application" "beanstalk_app" {
   description = "App for Project Tracker"
 }
 
+data "aws_elastic_beanstalk_environment" "beanstalk_env" {
+  name = "project-tracker-env"
+}
+
 resource "aws_elastic_beanstalk_environment" "beanstalk_env" {
-  name                = "project-tracker-env"
+  name                = data.aws_elastic_beanstalk_environment.beanstalk_env.name
   application         = aws_elastic_beanstalk_application.beanstalk_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v6.1.5 running Node.js 20"
   tier                = "WebServer"
@@ -125,6 +129,12 @@ resource "aws_elastic_beanstalk_environment" "beanstalk_env" {
     namespace = "aws:elbv2:listener:443"
     name      = "Protocol"
     value     = "HTTPS"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = aws_acm_certificate.cert_backend.arn
     resource  = ""
   }
   setting {
