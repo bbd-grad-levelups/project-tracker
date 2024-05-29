@@ -27,6 +27,7 @@ table {
     border: 1px solid rgba(54, 162, 235, 1);
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 .project-dashboard{

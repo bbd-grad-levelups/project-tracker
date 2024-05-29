@@ -15,7 +15,7 @@ function HomePage() {
         <div className='content'>
             <SideBar func = {setSelectedItem}></SideBar>
             {selectedItem > 0 ? (
-                <div>
+                <>
                     {projects.map((project) => {
                         if (project.id == selectedItem){
                             return (
@@ -23,7 +23,7 @@ function HomePage() {
                             )
                         }
                     })}
-                </div>
+                </>
             ) : selectedItem == 0 ? (
                 <CreateProject></CreateProject>
             ) : <UnselectedContainer></UnselectedContainer>} 
