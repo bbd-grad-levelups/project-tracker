@@ -1,37 +1,35 @@
 import { useState } from 'react'
-import ProjectContainer from '../components/projects-container/projects-container'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
+import ProjectGrid from '../components/project-grid/project-grid'
 import '../App.css'
+import SideBar from '../components/sidebar/sidebar'
+import NavBar from '../components/navbar/navbar'
+import UnselectedContainer from '../components/unselected-container/unselected-container'
+import CreateProject from '../components/create-project/create-project'
 
 function HomePage() {
-  const [count, setCount] = useState(0)
-
+  const [selectedItem, setSelectedItem] = useState(-1)
+  var projects = [{id: 1, name : 'Project 1', members: [{name: 'A', role: 'Team Lead', numTickets: 5}, {name: 'B', role: 'Dev', numTickets: 15}, {name: 'C', role: 'Dev', numTickets: 12}]}, {id: 5, name : 'Project 2', members: [{name: 'A', role: 'Team Lead', numTickets: 2}]}]
   return (
     <div className='page'>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Home</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/pages/Home.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <ProjectContainer></ProjectContainer>
-      
+        <NavBar></NavBar>
+        <div className='content'>
+            <SideBar func = {setSelectedItem}></SideBar>
+            {selectedItem > 0 ? (
+                <>
+                    {projects.map((project) => {
+                        if (project.id == selectedItem){
+                            return (
+                                <ProjectGrid key = {project.name} project = {project}></ProjectGrid>
+                            )
+                        }
+                    })}
+                </>
+            ) : selectedItem == 0 ? (
+                <CreateProject></CreateProject>
+            ) : <UnselectedContainer></UnselectedContainer>} 
+        </div>
     </div>
+    
   )
 }
 

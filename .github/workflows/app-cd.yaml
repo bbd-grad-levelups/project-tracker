@@ -45,7 +45,3 @@ jobs:
           region: eu-west-1
           deployment_package: api.zip
           existing_bucket_name: project-tracker-deploy-bucket
-
-      - name: Deploy website
-        run: aws s3 sync . s3://${{ secrets.BUCKET_NAME }}
-        working-directory: Front end

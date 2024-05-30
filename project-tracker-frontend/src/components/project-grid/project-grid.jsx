@@ -28,7 +28,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 
 
 function ProjectGrid(props) {
-    const [expanded, setExpanded] = useState(false);
+    const [expanded, setExpanded] = useState(true);
     var projectName = props.project.name
     var members = props.project.members
     var startDate = Date.now().toString()
@@ -111,7 +111,7 @@ function ProjectGrid(props) {
     };
     return (
         <div className="project-grid">
-            <div onClick={() => setExpanded(!expanded)}>
+            <div onClick={() => setExpanded(true)}>
                 <h2 className="project-title">{projectName}</h2>
             </div>
             {expanded ? (

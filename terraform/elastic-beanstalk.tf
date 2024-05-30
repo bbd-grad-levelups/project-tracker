@@ -35,8 +35,12 @@ resource "aws_elastic_beanstalk_application" "beanstalk_app" {
   description = "App for Project Tracker"
 }
 
+data "aws_elastic_beanstalk_environment" "beanstalk_env" {
+  name = "project-tracker-env"
+}
+
 resource "aws_elastic_beanstalk_environment" "beanstalk_env" {
-  name                = "project-tracker-env"
+  name                = data.aws_elastic_beanstalk_environment.beanstalk_env.name
   application         = aws_elastic_beanstalk_application.beanstalk_app.name
   solution_stack_name = "64bit Amazon Linux 2023 v6.1.5 running Node.js 20"
   tier                = "WebServer"
@@ -82,13 +86,86 @@ resource "aws_elastic_beanstalk_environment" "beanstalk_env" {
     value     = "true"
   }
   setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "EnvironmentType"
-    value     = "SingleInstance"
-  }
-  setting {
     namespace = "aws:elasticbeanstalk:managedactions"
     name      = "ManagedActionsEnabled"
     value     = "false"
   }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "SERVER_PORT"
+    value     = "5000"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "LoadBalanced"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "application"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:80"
+    name      = "ListenerEnabled"
+    value     = "true"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:80"
+    name      = "Protocol"
+    value     = "HTTP"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "ListenerEnabled"
+    value     = "true"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = aws_acm_certificate.cert_backend.arn
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "AssociatePublicIpAddress"
+    value     = "true"
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "Interval"
+    value     = 60
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:elb:healthcheck"
+    name      = "Timeout"
+    value     = 20
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = 1
+    resource  = ""
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = 1
+    resource  = ""
+  }
+
 }
