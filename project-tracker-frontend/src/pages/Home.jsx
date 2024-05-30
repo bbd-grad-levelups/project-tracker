@@ -11,7 +11,7 @@ function HomePage() {
   var projects = [{id: 1, name : 'Project 1', members: [{name: 'A', role: 'Team Lead', numTickets: 5}, {name: 'B', role: 'Dev', numTickets: 15}, {name: 'C', role: 'Dev', numTickets: 12}]}, {id: 5, name : 'Project 2', members: [{name: 'A', role: 'Team Lead', numTickets: 2}]}]
   return (
     <div className='page'>
-        <NavBar></NavBar>
+        <NavBar func = {setSelectedItem}></NavBar>
         <div className='content'>
             <SideBar func = {setSelectedItem}></SideBar>
             {selectedItem > 0 ? (

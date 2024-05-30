@@ -1,7 +1,7 @@
 import { useState } from "react";
 import gitLogo from "../../assets/Git.png"
 import jiraLogo from "../../assets/Jira.png"
-import congluenceLogo from "../../assets/Confluence.png"
+import confluenceLogo from "../../assets/Confluence.png"
 import './project-grid.css';
 import {
     Chart as ChartJS,
@@ -160,7 +160,7 @@ function ProjectGrid(props) {
                             <img src={jiraLogo} className="logo-jira" alt="Jira logo" />
                         </a>
                         <a href="https://react.dev" target="_blank">
-                            <img src={congluenceLogo} className="logo-confluence" alt="Confluence logo" />
+                            <img src={confluenceLogo} className="logo-confluence" alt="Confluence logo" />
                         </a>                     
                     </section>
                 </div>

@@ -4,4 +4,29 @@
     height: 5em;
     align-content: center;
     box-sizing: border-box;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 5em;
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.navbar button {
+    width: 10em;
+    margin: 1em 2em;
+}
+
+.logout-button {
+    grid-column-start: 5;
+}
+
+.logo {
+    height: 5em;
+    width: 5em;
+    object-fit: fill;
+    max-height: 100%;
+    max-width: 100%;
+    padding: 0;
+    cursor: pointer;
 }

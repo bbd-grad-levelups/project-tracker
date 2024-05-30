@@ -14,4 +14,8 @@ function SideBar(props) {
     )
 }
 
+SideBar.defaultProps = {func :() => {console.log('No function provided')}}
+
+SideBar.propTypes = {func : Function}
+
 export default SideBar
