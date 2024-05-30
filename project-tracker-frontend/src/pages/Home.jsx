@@ -25,7 +25,7 @@ function HomePage() {
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme />
             <div className='page'>
-                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme}/>
+                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem}/>
                 <div className='content'>
                     <SideBar func={setSelectedItem}></SideBar>
                     {selectedItem > 0 ? (
