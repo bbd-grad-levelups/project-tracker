@@ -78,12 +78,16 @@ table {
 }
 
 .table-section {
-    height: 15em;
-    max-width: 95%;
+    height: 12em;
     width: 28em;
-    overflow-y:scroll;
     max-height: 95%;
     margin: 0.5rem 0;
+    overflow-y:auto;
+}
+
+.board {
+    height: 15em;
+    width: 28em;
 }
 
 h3 {

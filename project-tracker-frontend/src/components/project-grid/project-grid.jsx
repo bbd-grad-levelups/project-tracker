@@ -2,7 +2,7 @@ import { useState } from "react";
 import gitLogo from "../../assets/Git.png"
 import jiraLogo from "../../assets/Jira.png"
 import confluenceLogo from "../../assets/Confluence.png"
-import { Container} from "@mui/material";
+import { Container, Select, MenuItem} from "@mui/material";
 import './project-grid.css';
 import {
     Chart as ChartJS,
@@ -15,6 +15,7 @@ import {
     ArcElement
   } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
+import { render } from "react-dom";
 
   ChartJS.register(
     CategoryScale,
@@ -110,6 +111,15 @@ function ProjectGrid(props) {
         }
       ],
     };
+    const [board, setBoard] = useState('Board 1');
+
+    const boards = [{boardName: 'Board 1'}, {boardName: 'Board 2'}]
+
+    const handleChange = (event) => {
+      setBoard(event.target.value);
+    };
+
+    
     return (
         <div className="project-grid">
             <Container>
@@ -120,24 +130,40 @@ function ProjectGrid(props) {
                     <div className='project-dashboard'>
                         <section className="info-section">
                             <section className="members-section">
-                                <div className="table-section">
-                                    <table>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Role</th>
-                                            <th>Number of tickets</th>
-                                        </tr>
-                                        {members.map((val, key) => {
-                                            return (
-                                                <tr key={key}>
-                                                    <td>{val.name}</td>
-                                                    <td>{val.role}</td>
-                                                    <td>{val.numTickets}</td>
-                                                </tr>
-                                            )
-                                        })}
-                                    </table>
+                                <div className="board">
+                                    <Select
+                                        id="demo-simple-select"
+                                        value={board}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        
+                                    >
+                                        {boards.map((board) => {
+                                                return (
+                                                    <MenuItem key={board.boardName} value={board.boardName}>{board.boardName}</MenuItem>
+                                                )
+                                            })}
+                                    </Select>
+                                    <div className="table-section">   
+                                        <table>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Number of tickets</th>
+                                            </tr>
+                                            {members.map((val, key) => {
+                                                return (
+                                                    <tr key={key}>
+                                                        <td>{val.name}</td>
+                                                        <td>{val.role}</td>
+                                                        <td>{val.numTickets}</td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </table>
+                                    </div>
                                 </div>
+                                
                                 
                                 <div className="pie-chart">
                                     <Pie data={pieData} options={pieOptions}/>
