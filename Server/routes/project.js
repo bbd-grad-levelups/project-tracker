@@ -9,6 +9,8 @@ router.get('/create', function(req, res) {
   const project = req.query.projectName;
   const accessUser = req.query.accessUser;
   const accessKey = req.query.accessKey;
+  const description = req.query.projectDescription;
+  const abbreviation = req.query.projectAbbreviation;
   const jiraLink = req.query.jiraLink;
   const gitLink = req.query.gitLink;
   const confluenceLink = req.query.confluenceLink;
@@ -18,6 +20,8 @@ router.get('/create', function(req, res) {
   .input('ProjectName', project)
   .input('AccessUser', accessUser)
   .input('AccessKey', accessKey)
+  .input('Description', description)
+  .input('Abbrev', abbreviation)
   .input('Jira', jiraLink)
   .input('Git', gitLink)
   .input('Conf', confluenceLink)
@@ -63,6 +67,8 @@ router.get('/remove', function(req, res) {
 router.get('/change', function(req, res) {
   const project = req.query.projectName;
   const new_name = req.query.newName;
+  const new_description = req.query.description;
+  const new_abbreviation = req.query.abbreviation;
   const new_jira = req.query.jiraLink;
   const new_git = req.query.gitLink;
   const new_confluence = req.query.confluenceLink;
@@ -70,7 +76,7 @@ router.get('/change', function(req, res) {
 
   get_project_access(user, project)
   .then(() => {
-
+    res.send({ error: "Unimplemented, sorry haha"});
   })
   .catch(() => {
     res.status(404).json({ error: "User does not have access to project, or project does not exist"})
@@ -78,9 +84,39 @@ router.get('/change', function(req, res) {
 
 });
 
-// Get all details about all boards in project?
+// Get all details about all boards in project.
 router.get('/summary', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+  // Test if user has access to this board
 
+  get_project_access(user, project)
+  .then((answer) => {
+    const apiUser = answer.user;
+    const apiToken = answer.token;
+    const apiProject = answer.project;
+
+    pull_jira_data(
+      apiProject,
+      apiUser,
+      apiToken
+    ).then((data) => {
+      let issues = extract_issue_count(data);
+      // Expand summary data here.
+      console.log("summary data:", issues);
+      res.send({ 
+        summary: issues 
+      });
+    }).catch((error) => {
+      console.log("Error: ", error);
+      res.status(500).json({ error: 'An error occurred while processing your request'});
+    });
+
+  })
+  .catch((error) => {
+    console.log("error when getting board: " + error);
+    res.status(403).json({ error: error});
+  });
 });
 
 // Info of Project
@@ -105,6 +141,8 @@ router.get('/info', function(req, res) {
     if (result.recordset.length > 0) {
       res.send({ 
         projectName : project,
+        description: result.recordset[0].project_description,
+        abbreviation: result.recordset[0].project_abbreviation,
         jira: result.recordset[0].jira_link,
         git: result.recordset[0].git_link,
         confluence: result.recordset[0].confluence_link

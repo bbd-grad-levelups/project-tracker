@@ -53,7 +53,7 @@ router.get('/create', function(req, res) {
 
   get_project_access(user, project)
   .then((answer) => {
-    const projectID = answer.project;
+    const projectID = answer.projectID;
 
     const query = `INSERT INTO board (project_id, board_name, board_key) VALUES (@project, @board_name, @board_key)`;
 
@@ -85,7 +85,7 @@ router.get('/remove', function(req, res) {
 
   get_project_access(user, project)
   .then((answer) => {
-    const projectID = answer.project;
+    const projectID = answer.projectID;
 
     const query = `DELETE FROM board WHERE project_id = @project AND board_name = @board`;
 

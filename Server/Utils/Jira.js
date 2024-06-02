@@ -1,10 +1,22 @@
 const https = require('https');
 
+async function pull_jira_data(hostname, user, token) {
+  return pull_jira_data(hostname, '', user, token)
+}
+
 async function pull_jira_data(hostname, board_name, user, token) {
+  let path = '/rest/api/3/search?';
+  if (board_name == '') {
+    path = path + 'jql=';
+  }
+  else {
+    path = path + `jql=project=${encodeURIComponent(board_name)}`;
+  }
+
   return new Promise((resolve, reject) => {
     const options = {
       hostname: hostname,
-      path: `/rest/api/3/search?jql=project=${encodeURIComponent(board_name)}`,
+      path: path,
       method: 'GET',
       headers: {
         'Authorization': `Basic ${Buffer.from(`${user}:${token}`).toString('base64')}`

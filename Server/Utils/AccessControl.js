@@ -48,7 +48,7 @@ async function get_project_access(uid, project) {
   return new Promise((resolve, reject) => {
 
     const query = `
-      SELECT p.project_id
+      SELECT p.project_id, p.jira_link, p.access_user, p.access_key
       FROM project p
       JOIN user_project up ON p.project_id = up.project_id
       JOIN [user] u ON up.user_id = u.user_id
@@ -65,7 +65,10 @@ async function get_project_access(uid, project) {
       .then((result) => {
         if (result.recordset.length > 0) {
           resolve({
-            project: result.recordset[0].project_id
+            projectID: result.recordset[0].project_id,
+            user: result.recordset[0].access_user,
+            token: result.recordset[0].access_key,
+            project: result.recordset[0].jira_link,
           });
         }
         else {

@@ -14,6 +14,8 @@ GO
 
 CREATE TABLE project (
 	project_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  project_description VARCHAR(2048),
+  project_abbreviation VARCHAR(8) NOT NULL,
 	project_name VARCHAR(255) NOT NULL,
 	access_user VARCHAR(255) NOT NULL,
 	access_key VARCHAR(255) NOT NULL,

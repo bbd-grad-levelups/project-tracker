@@ -10,7 +10,7 @@ router.get('/add', function(req, res) {
 
   get_project_access(user, project)
   .then((answer) => {
-    const projectID = answer.project;
+    const projectID = answer.projectID;
 
     const query = `
       INSERT INTO user_project
@@ -50,7 +50,7 @@ router.get('/remove', function(req, res) {
 
   get_project_access(user, project)
   .then((answer) => {
-    const projectID = answer.project;
+    const projectID = answer.projectID;
 
     const query = `
       DELETE FROM user_project
