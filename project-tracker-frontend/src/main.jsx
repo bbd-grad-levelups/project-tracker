@@ -10,6 +10,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
+const backendPath = 'http://localhost:3000'
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,3 +29,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <RouterProvider router={router} />
   </React.StrictMode>,
 )
+
+export default backendPath;

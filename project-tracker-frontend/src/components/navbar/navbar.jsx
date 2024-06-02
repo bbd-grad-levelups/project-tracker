@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/logo.svg";
 import React, { useState } from 'react';
 
-function NavBar({ darkMode, toggleDarkTheme, func }) {
+function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') } }) {
 
     const theme = useTheme();
     var isAdmin = true;
@@ -77,8 +77,6 @@ function NavBar({ darkMode, toggleDarkTheme, func }) {
         </React.Fragment>
     )
 }
-
-NavBar.defaultProps = { func: () => { console.log('No function provided') } }
 
 NavBar.propTypes = { func: Function }
 
