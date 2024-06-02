@@ -11,13 +11,19 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 
-// const oauthMiddleware = require('./Middleware/OAuth');
-// app.use(oauthMiddleware);
+const oauthMiddleware = require('./Middleware/OAuth');
+app.use(oauthMiddleware);
 
-// const registrationMiddleware = require('./Middleware/RegisterUser');
-// app.use(registrationMiddleware);
+const registrationMiddleware = require('./Middleware/RegisterUser');
+app.use(registrationMiddleware);
 
-const testRouter = require('./routes/test');
-app.use('/test', testRouter);
+const userRouter = require('./routes/users.js');
+app.use('/user', userRouter);
+
+const projectRouter = require('./routes/project.js');
+app.use('/project', projectRouter);
+
+const boardRouter = require('./routes/board.js');
+app.use('/board', boardRouter);
 
 module.exports = app;
