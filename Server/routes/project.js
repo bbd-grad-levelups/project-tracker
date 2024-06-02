@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const { pool } = require('../db');
-const { get_project_access} = require('../Utils/AccessControl.js');
+const { get_project_access } = require('../Utils/AccessControl.js');
+const { pull_jira_data_all, extract_issue_count } = require('../Utils/Jira.js');
 
 // Add project
 router.get('/create', function(req, res) {
@@ -89,14 +90,13 @@ router.get('/summary', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
   // Test if user has access to this board
-
   get_project_access(user, project)
   .then((answer) => {
     const apiUser = answer.user;
     const apiToken = answer.token;
     const apiProject = answer.project;
 
-    pull_jira_data(
+    pull_jira_data_all(
       apiProject,
       apiUser,
       apiToken

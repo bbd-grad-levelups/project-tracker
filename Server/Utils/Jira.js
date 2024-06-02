@@ -1,6 +1,6 @@
 const https = require('https');
 
-async function pull_jira_data(hostname, user, token) {
+async function pull_jira_data_all(hostname, user, token) {
   return pull_jira_data(hostname, '', user, token)
 }
 
@@ -66,4 +66,4 @@ function extract_issue_count(responseData) {
 }
 
 
-module.exports = { extract_issue_count, pull_jira_data };
+module.exports = { extract_issue_count, pull_jira_data, pull_jira_data_all };

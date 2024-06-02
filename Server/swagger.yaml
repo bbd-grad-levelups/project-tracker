@@ -1,0 +1,242 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Sample API Documentation
+  description: |
+    This is the Swagger documentation for the Sample API.
+host: "api.project-tracker.projects.bbdgrad.com"
+basePath: "/"
+schemes:
+  - "https"
+tags:
+  - name: Project
+    description: Endpoints related to projects
+  - name: Board
+    description: Endpoints related to boards
+  - name: User
+    description: Endpoints related to users
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /project/create:
+    get:
+      tags:
+        - Project
+      summary: Create Project
+      description: Create a new project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: accessUser
+          in: query
+          description: Access user for the project
+          required: true
+          type: string
+        - name: accessKey
+          in: query
+          description: Access key for the project
+          required: true
+          type: string
+        - name: projectDescription
+          in: query
+          description: Description of the project
+          required: true
+          type: string
+        - name: projectAbbreviation
+          in: query
+          description: Abbreviation of the project
+          required: true
+          type: string
+        - name: jiraLink
+          in: query
+          description: Jira link for the project
+          required: true
+          type: string
+        - name: gitLink
+          in: query
+          description: Git link for the project
+          required: true
+          type: string
+        - name: confluenceLink
+          in: query
+          description: Confluence link for the project
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+      security:
+        - BearerAuth: []
+  /project/remove:
+    get:
+      tags:
+        - Project
+      summary: Remove Project
+      description: Remove a project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              result:
+                type: string
+      security:
+        - BearerAuth: []
+  /board/summary:
+    get:
+      tags:
+        - Board
+      summary: Get Board Summary
+      description: Get summary of a board.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: boardName
+          in: query
+          description: Name of the board
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              summary:
+                type: object
+      security:
+        - BearerAuth: []
+  /board/create:
+    get:
+      tags:
+        - Board
+      summary: Create Board
+      description: Create a new board for a project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: boardName
+          in: query
+          description: Name of the board
+          required: true
+          type: string
+        - name: boardKey
+          in: query
+          description: Key of the board
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      security:
+        - BearerAuth: []
+  /board/remove:
+    get:
+      tags:
+        - Board
+      summary: Remove Board
+      description: Remove a board from a project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: boardName
+          in: query
+          description: Name of the board
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      security:
+        - BearerAuth: []
+  /user/add:
+    get:
+      tags:
+        - User
+      summary: Add User to Project
+      description: Add a user to a project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: userName
+          in: query
+          description: Username of the user to add
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      security:
+        - BearerAuth: []
+  /user/remove:
+    get:
+      tags:
+        - User
+      summary: Remove User from Project
+      description: Remove a user from a project.
+      parameters:
+        - name: projectName
+          in: query
+          description: Name of the project
+          required: true
+          type: string
+        - name: userName
+          in: query
+          description: Username of the user to remove
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+      security:
+        - BearerAuth: []

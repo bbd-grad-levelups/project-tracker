@@ -4,8 +4,10 @@ function oauthMiddleware(req, res, next) {
   // Single user for testing
   var playerName = 'johan';
   var uniqueID = '12491122';
-
+  console.log("OAuth middleware");
+  console.log("auth: " + req.headers.authorization)
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    console.log("Auth found")
     req.user = {
       userName: playerName,
       UID: uniqueID

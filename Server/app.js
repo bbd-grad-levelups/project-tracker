@@ -9,6 +9,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(bodyParser.json());
 
 const oauthMiddleware = require('./Middleware/OAuth');
@@ -16,6 +17,9 @@ app.use(oauthMiddleware);
 
 const registrationMiddleware = require('./Middleware/RegisterUser');
 app.use(registrationMiddleware);
+
+const healthRouter = require('./routes/health.js');
+app.use('/', healthRouter);
 
 const userRouter = require('./routes/users.js');
 app.use('/user', userRouter);
