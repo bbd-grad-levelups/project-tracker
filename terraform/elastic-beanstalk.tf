@@ -117,6 +117,16 @@ resource "aws_elastic_beanstalk_environment" "beanstalk_env" {
     value     = "true"
   }
   setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "Protocol"
+    value     = "HTTPS"
+  }
+  setting {
+    namespace = "aws:elbv2:listener:443"
+    name      = "SSLCertificateArns"
+    value     = aws_acm_certificate.cert_backend.arn
+  }
+  setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
     value     = "true"
