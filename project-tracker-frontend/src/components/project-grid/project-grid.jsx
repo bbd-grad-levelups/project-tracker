@@ -1,7 +1,8 @@
 import { useState } from "react";
 import gitLogo from "../../assets/Git.png"
 import jiraLogo from "../../assets/Jira.png"
-import congluenceLogo from "../../assets/Confluence.png"
+import confluenceLogo from "../../assets/Confluence.png"
+import { Container, Select, MenuItem} from "@mui/material";
 import './project-grid.css';
 import {
     Chart as ChartJS,
@@ -14,6 +15,7 @@ import {
     ArcElement
   } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
+import { render } from "react-dom";
 
   ChartJS.register(
     CategoryScale,
@@ -83,7 +85,7 @@ function ProjectGrid(props) {
 
     const pieOptions = {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'right',
@@ -109,62 +111,89 @@ function ProjectGrid(props) {
         }
       ],
     };
+    const [board, setBoard] = useState('Board 1');
+
+    const boards = [{boardName: 'Board 1'}, {boardName: 'Board 2'}]
+
+    const handleChange = (event) => {
+      setBoard(event.target.value);
+    };
+
+    
     return (
         <div className="project-grid">
-            <div onClick={() => setExpanded(true)}>
-                <h2 className="project-title">{projectName}</h2>
-            </div>
-            {expanded ? (
-                <div className='project-dashboard'>
-                    <section className="info-section">
-                        <section className="members-section">
-                            <div className="table-section">
-                                <table>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Role</th>
-                                        <th>Number of tickets</th>
-                                    </tr>
-                                    {members.map((val, key) => {
-                                        return (
-                                            <tr key={key}>
-                                                <td>{val.name}</td>
-                                                <td>{val.role}</td>
-                                                <td>{val.numTickets}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </table>
-                            </div>
-                            
-                            <div className="pie-chart">
-                                <Pie data={pieData} options={pieOptions}/>
-                            </div>
-                        </section>
-                        <section className="progress-section">
-                            <div className="bar-chart">
-                                <Bar options={barOptions} data={barData}/>
-                            </div>
-                            <article className="info-card">
-                                <h3>Start Date: {startDate}</h3>
-                                <h3>Current Progress: {progress}%</h3>
-                                <h3>Stage: {stage}</h3>
-                            </article>
-                        </section>
-                    </section>
-                    <section className="links-sections">
-                        <a href="https://react.dev" target="_blank">
-                            <img src={gitLogo} className="logo-git" alt="Git logo" />
-                        </a> 
-                        <a href="https://react.dev" target="_blank">
-                            <img src={jiraLogo} className="logo-jira" alt="Jira logo" />
-                        </a>
-                        <a href="https://react.dev" target="_blank">
-                            <img src={congluenceLogo} className="logo-confluence" alt="Confluence logo" />
-                        </a>                     
-                    </section>
+            <Container>
+                <div onClick={() => setExpanded(true)}>
+                    <h2 className="project-title">{projectName}</h2>
                 </div>
-            ) : null} 
+                {expanded ? (
+                    <div className='project-dashboard'>
+                        <section className="info-section">
+                            <section className="members-section">
+                                <div className="board">
+                                    <Select
+                                        id="demo-simple-select"
+                                        value={board}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        
+                                    >
+                                        {boards.map((board) => {
+                                                return (
+                                                    <MenuItem key={board.boardName} value={board.boardName}>{board.boardName}</MenuItem>
+                                                )
+                                            })}
+                                    </Select>
+                                    <div className="table-section">   
+                                        <table>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Number of tickets</th>
+                                            </tr>
+                                            {members.map((val, key) => {
+                                                return (
+                                                    <tr key={key}>
+                                                        <td>{val.name}</td>
+                                                        <td>{val.role}</td>
+                                                        <td>{val.numTickets}</td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div className="pie-chart">
+                                    <Pie data={pieData} options={pieOptions}/>
+                                </div>
+                            </section>
+                            <section className="progress-section">
+                                <div className="bar-chart">
+                                    <Bar options={barOptions} data={barData}/>
+                                </div>
+                                <article className="info-card">
+                                    <h3>Start Date: {startDate}</h3>
+                                    <h3>Current Progress: {progress}%</h3>
+                                    <h3>Stage: {stage}</h3>
+                                </article>
+                            </section>
+                        </section>
+                        <section className="links-sections">
+                            <a href="https://react.dev" target="_blank">
+                                <img src={gitLogo} className="logo-git" alt="Git logo" />
+                            </a> 
+                            <a href="https://react.dev" target="_blank">
+                                <img src={jiraLogo} className="logo-jira" alt="Jira logo" />
+                            </a>
+                            <a href="https://react.dev" target="_blank">
+                                <img src={confluenceLogo} className="logo-confluence" alt="Confluence logo" />
+                            </a>                     
+                        </section>
+                    </div>
+                ) : null} 
+            </Container>
         </div>
     )
 }

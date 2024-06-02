@@ -1,7 +1,6 @@
 .create-project{
     display: flex;
     flex-direction: column;
-    background-color: rgb(30, 30, 30);
     border: 1px solid rgba(54, 162, 235, 1);
     height: 100%;
     width: 100%;

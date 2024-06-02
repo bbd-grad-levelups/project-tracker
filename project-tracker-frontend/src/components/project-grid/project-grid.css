@@ -4,13 +4,8 @@ th {
     top: 0;
   }
 
-td {
-    background-color: white;
-    color: black;
-}
-
 tr {
-    background-color: black;
+    background-color: rgba(54, 162, 235, 1);
 }
 
 table {
@@ -41,7 +36,7 @@ table {
 
 .bar-chart {
     height: 15em;
-    width: 30em;
+    width: 28em;
     max-width: 95%;
 }
 
@@ -66,15 +61,15 @@ table {
 
 .pie-chart {
     height: 15em;
-    width: 18em;
-    padding: 0 4rem;
+    width: 15em;
+    margin: 0 2rem;
     max-height: 100%;
     max-width: 80%;
 }
 
 .info-card {
     height: 15em;
-    width: 18em;
+    width: 15em;
     padding: 0 1rem;
     max-height: 100%;
     border: 1px solid rgba(54, 162, 235, 1);
@@ -83,12 +78,16 @@ table {
 }
 
 .table-section {
-    height: 15em;
-    max-width: 95%;
-    width: 30em;
-    overflow-y:scroll;
+    height: 12em;
+    width: 28em;
     max-height: 95%;
     margin: 0.5rem 0;
+    overflow-y:auto;
+}
+
+.board {
+    height: 15em;
+    width: 28em;
 }
 
 h3 {
@@ -129,6 +128,10 @@ div section a img {
 }
 
 @media screen and (orientation: portrait) {
+    .project-grid {
+        max-width: 100%;
+    }
+
     .info-section{
         display: flex;
         flex-direction: row;
@@ -183,6 +186,13 @@ div section a img {
         width: 40em;
         max-width: 95%;
         margin: 1rem 0;
+    }
+
+    .board {
+        height: 15em;
+        width: 28em;
+        max-width: 95%;
+        margin: 2em 0;
     }
   }
   
