@@ -33,7 +33,7 @@ function NavBar({ darkMode, toggleDarkTheme, func }) {
                 }
                 <Typography variant="body1">{theme.palette.mode} mode</Typography>
                 <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
-                <Button variant="contained" color="secondary" type="submit" size="medium">
+                <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
                     Logout
                 </Button>
             </Stack>
@@ -82,4 +82,9 @@ NavBar.defaultProps = { func: () => { console.log('No function provided') } }
 
 NavBar.propTypes = { func: Function }
 
+function logout() {
+    const url = "https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=http://localhost:5173/login";
+    sessionStorage.clear();
+    location.href = url;
+}
 export default NavBar
