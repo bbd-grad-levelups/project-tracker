@@ -6,7 +6,7 @@ var router = express.Router();
 router.get('/add', function(req, res) {
   const project = req.query.projectName;
   const newUser = req.query.userName;
-  const user = req.query.username;
+  const user = req.user.UID;
 
   get_project_access(user, project)
   .then((answer) => {
@@ -46,7 +46,7 @@ router.get('/add', function(req, res) {
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
   const oldUser = req.query.userName;
-  const user = req.query.username;
+  const user = req.query.UID;
 
   get_project_access(user, project)
   .then((answer) => {
