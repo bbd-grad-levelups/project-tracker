@@ -11,6 +11,13 @@ import { darkTheme, lightTheme } from "../theme.jsx"
 import backendPath from '../main.jsx'
 
 function HomePage() {
+    try {
+        if (!sessionStorage.getItem("token")) {
+            location.href = window.location.protocol + "//" + window.location.host + "/login";
+        }
+    } catch (e) {
+        console.log(e);
+    }
 
     const [darkMode, setDarkMode] = useState(true);
 
@@ -41,7 +48,7 @@ function HomePage() {
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme />
             <div className='page'>
-                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem}/>
+                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem} />
                 <div className='content'>
                     <SideBar func={setSelectedItem} projects={projects}></SideBar>
                     {selectedItem >= 0 ? (
