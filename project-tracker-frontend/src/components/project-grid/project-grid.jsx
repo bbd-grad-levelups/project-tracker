@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import gitLogo from "../../assets/Git.png"
 import jiraLogo from "../../assets/Jira.png"
 import confluenceLogo from "../../assets/Confluence.png"
 import { Container, Select, MenuItem} from "@mui/material";
 import './project-grid.css';
+import backendPath from '../../main.jsx'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -15,7 +16,6 @@ import {
     ArcElement
   } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { render } from "react-dom";
 
   ChartJS.register(
     CategoryScale,
@@ -29,12 +29,37 @@ import { render } from "react-dom";
   ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-function ProjectGrid(props) {
+function ProjectGrid({projectName = ''}) {
     const [expanded, setExpanded] = useState(true);
-    var projectName = props.project.name
-    var members = props.project.members
+
+    const token = ''
+    const [projectLinks, setProjectLinks] = useState([]);
+    useEffect(() => {
+        fetch(`${backendPath}/project/info/?projectName=${projectName}`, {method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}})
+            .then((response) => response.json())
+            .then((data) => {
+                setProjectLinks(data);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, []);
+
+    const [projectSummary, setProjectSummary] = useState([]);
+    useEffect(() => {
+        fetch(`${backendPath}/project/summary/?projectName=${projectName}`, {method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}})
+            .then((response) => response.json())
+            .then((data) => {
+                setProjectSummary(data.summary);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, []);
+    var members = []
     var startDate = Date.now().toString()
-    var progress = 70
     var stage = 'QA'
     members = [{name: 'Thabo Ladubwe', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3}]
     const pieData = {
@@ -99,14 +124,24 @@ function ProjectGrid(props) {
         },
       };
         
-    const barLabels = ['To Do', 'In Progress', 'Done'];
+    var barLabels = [];
+    var barLabelData = [];
+    var total = 0;
+    
+    for (var label in projectSummary) {
+        barLabels.push(label)
+        barLabelData.push(projectSummary[label]);
+        total += projectSummary[label];
+    }
+
+    var progress = projectSummary["Done"]/total*100;
     
     const barData = {
       labels: barLabels,
       datasets: [
         {
           label: 'Number of Tickets',
-          data: [1,5,6],
+          data: barLabelData,
           backgroundColor: 'darkblue',
         }
       ],
@@ -181,13 +216,13 @@ function ProjectGrid(props) {
                             </section>
                         </section>
                         <section className="links-sections">
-                            <a href="https://react.dev" target="_blank">
+                            <a href={projectLinks.git} target="_blank">
                                 <img src={gitLogo} className="logo-git" alt="Git logo" />
                             </a> 
-                            <a href="https://react.dev" target="_blank">
+                            <a href={projectLinks.jira} target="_blank">
                                 <img src={jiraLogo} className="logo-jira" alt="Jira logo" />
                             </a>
-                            <a href="https://react.dev" target="_blank">
+                            <a href={projectLinks.confluence} target="_blank">
                                 <img src={confluenceLogo} className="logo-confluence" alt="Confluence logo" />
                             </a>                     
                         </section>
@@ -198,8 +233,6 @@ function ProjectGrid(props) {
     )
 }
 
-ProjectGrid.defaultProps = {project : {name: '', members: []}}
-
-ProjectGrid.propTypes = {project : Object}
+ProjectGrid.propTypes = {projectName : String}
 
 export default ProjectGrid
