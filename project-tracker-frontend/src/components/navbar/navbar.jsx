@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/logo.svg";
 import React, { useState } from 'react';
 
-function NavBar({ darkMode, toggleDarkTheme, func }) {
+function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') } }) {
 
     const theme = useTheme();
     var isAdmin = true;
@@ -33,7 +33,7 @@ function NavBar({ darkMode, toggleDarkTheme, func }) {
                 }
                 <Typography variant="body1">{theme.palette.mode} mode</Typography>
                 <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
-                <Button variant="contained" color="secondary" type="submit" size="medium">
+                <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
                     Logout
                 </Button>
             </Stack>
@@ -78,8 +78,11 @@ function NavBar({ darkMode, toggleDarkTheme, func }) {
     )
 }
 
-NavBar.defaultProps = { func: () => { console.log('No function provided') } }
-
 NavBar.propTypes = { func: Function }
 
+function logout() {
+    const url = "https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=http://localhost:5173/login";
+    sessionStorage.clear();
+    location.href = url;
+}
 export default NavBar

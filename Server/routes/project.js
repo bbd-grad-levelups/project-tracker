@@ -241,7 +241,7 @@ router.get('/projects', function(req, res) {
   const user = req.user.UID;
 
   const query = `
-    SELECT p.project_name, p.project_description
+    SELECT p.project_name, p.project_description, p.project_abbreviation
     FROM project p
     JOIN user_project up ON p.project_id = up.project_id
     JOIN [user] u ON up.user_id = u.user_id 
@@ -259,7 +259,14 @@ router.get('/projects', function(req, res) {
       }
     });
     console.log(`User ${req.user.userName} has access to: ${result.recordset}`);
-    res.send({ projects: projectDetails});
+    if (result.recordset.length > 0) {
+      res.send({ 
+        projectDetails
+      });
+    }
+    else {
+      res.status(404).json({ error: "Project not found for user"});
+    }
   })
   .catch((error) => {
     console.log("Could not access user projects: " + error);

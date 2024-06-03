@@ -1,25 +1,40 @@
-import { useState } from 'react'
-import ProjectGrid from '../components/project-grid/project-grid'
-import '../App.css'
+import React, { useState } from 'react';
+import LoginButton from '../components/buttons/login-button'
+import '../index.css'
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, Switch } from '@mui/material';
+import { darkTheme, lightTheme } from "../theme.jsx";
+
+
 
 function LoginPage() {
-  const [count, setCount] = useState(0)
+  try {
+    if (sessionStorage.getItem("token")) {
+      location.href = window.location.protocol + "//" + window.location.host;
+    }
+  } catch (e) {
+    console.log(e);
+  }
+  const [darkMode, setDarkMode] = useState(true);
+
+  const toggleDarkTheme = () => {
+    setDarkMode(!darkMode);
+  };
+  const theme = darkMode ? darkTheme : lightTheme;
 
   return (
     <>
-      <h1>Login</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/pages/Login.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <ProjectGrid></ProjectGrid>
+      <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme />
+        <section className='login-navbar'>
+          <p>Dark Mode</p>
+          <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
+        </section>
+        <section id="login-id" className="login-class">
+          <h1>Welcome to Project-Tracker!</h1>
+          <LoginButton />
+        </section>
+      </ThemeProvider>
     </>
   )
 }
