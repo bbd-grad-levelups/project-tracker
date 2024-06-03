@@ -46,8 +46,10 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         event.preventDefault();
                         const formData = new FormData(event.currentTarget);
                         const formJson = Object.fromEntries(formData.entries());
-                        const project_name = formJson.project_name;
-                        console.log(project_name);
+                        const projectName = formJson.projectName;
+                        console.log(projectName);
+                        console.log(formJson);
+                        //TODO: update project
                         handleClose();
                     },
                 }}
@@ -58,14 +60,103 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         Please fill in any fields you would like to update.
                     </DialogContentText>
                     <TextField
-                        autoFocus
+                        inputProps={{ maxLength: 255 }}
                         required
-                        margin="dense"
-                        id="project_name"
-                        name="project_name"
+                        name="projectName"
                         label="Project Name"
+                        inputMode="text"
+                        fullWidth={true}
                         type="text"
-                        fullWidth
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 5 }}
+                        required
+                        name="projectCode"
+                        label="Project Code"
+                        inputMode="text"
+                        fullWidth={true}
+                        type="text"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 255 }}
+                        required
+                        name="projectDescription"
+                        label="Project Description"
+                        inputMode="text"
+                        multiline
+                        maxRows={4}
+                        fullWidth={true}
+                        type="text"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 5 }}
+                        required
+                        name="accessUser"
+                        label="Access User"
+                        helperText="Your Jira user"
+                        inputMode="text"
+                        fullWidth={true}
+                        type="text"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 5 }}
+                        required
+                        name="accessKey"
+                        label="Access Key"
+                        helperText="Your users' Jira access key"
+                        inputMode="text"
+                        fullWidth={true}
+                        type="text"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 255 }}
+                        required
+                        name="jiraLink"
+                        label="Jira Link"
+                        inputMode="url"
+                        fullWidth={true}
+                        type="url"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 255 }}
+                        name="confluenceLink"
+                        label="Confluence Link"
+                        inputMode="url"
+                        fullWidth={true}
+                        required
+                        type="url"
+                        autoFocus
+                        margin="dense"
+                        variant="standard"
+                    />
+                    <TextField
+                        inputProps={{ maxLength: 255 }}
+                        name="githubLink"
+                        label="Github Link"
+                        inputMode="url"
+                        fullWidth={true}
+                        required
+                        type="url"
+                        autoFocus
+                        margin="dense"
                         variant="standard"
                     />
                 </DialogContent>
