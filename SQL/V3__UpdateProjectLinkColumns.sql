@@ -1,0 +1,7 @@
+ALTER TABLE dbo.project   
+DROP CONSTRAINT UQ__project__BE9563718F6F7219;  
+GO  
+
+ALTER TABLE dbo.project   
+DROP CONSTRAINT UQ__project__10CE7139A4819A36;  
+GO  

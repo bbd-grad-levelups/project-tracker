@@ -74,8 +74,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     <TextField
                         inputProps={{ maxLength: 5 }}
                         required
-                        name="projectCode"
-                        label="Project Code"
+                        name="projectAbbreviation"
+                        label="Project Abbreviation"
                         inputMode="text"
                         fullWidth={true}
                         type="text"
