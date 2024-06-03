@@ -7,7 +7,7 @@ function CreateProject() {
 
     const [formData, setFormData] = useState({
         projectName: '',
-        projectCode: '',
+        projectAbbreviation: '',
         projectDescription: '',
         accessUser: '',
         accessKey: '',
@@ -68,12 +68,12 @@ function CreateProject() {
                     <TextField
                         inputProps={{ maxLength: 5 }}
                         required
-                        name="projectCode"
-                        label="Project Code"
+                        name="projectAbbreviation"
+                        label="Project Abbreviation"
                         inputMode="text"
                         type="text"
                         fullWidth={true}
-                        value={formData.projectCode}
+                        value={formData.projectAbbreviation}
                         onChange={handleChange}
                     />
                     <TextField
