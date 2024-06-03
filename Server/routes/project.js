@@ -3,7 +3,7 @@ var router = express.Router();
 
 const { pool } = require('../db');
 const { get_project_access } = require('../Utils/AccessControl.js');
-const { pull_jira_data_all, extract_issue_count } = require('../Utils/Jira.js');
+const { pull_jira_data_all, extract_issue_count, extract_users } = require('../Utils/Jira.js');
 
 // Add project
 router.get('/create', function(req, res) {
@@ -158,7 +158,8 @@ router.get('/boards', function(req, res) {
     res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
   });
 
-})
+});
+
 // Get all details about all boards in project.
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
@@ -176,10 +177,12 @@ router.get('/summary', function(req, res) {
       apiToken
     ).then((data) => {
       let issues = extract_issue_count(data);
+      let users = extract_users(data);
       // Expand summary data here.
       console.log("summary data:", issues);
       res.send({ 
-        summary: issues 
+        summary: issues,
+        users: users 
       });
     }).catch((error) => {
       console.log("Error: ", error);

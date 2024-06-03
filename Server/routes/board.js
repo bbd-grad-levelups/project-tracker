@@ -4,7 +4,7 @@ const sql = require('mssql');
 var express = require('express');
 var router = express.Router();
 
-const { pull_jira_data, extract_issue_count } = require('../Utils/Jira.js');
+const { pull_jira_data, extract_issue_count, extract_users } = require('../Utils/Jira.js');
 const { get_board_access, get_project_access} = require('../Utils/AccessControl.js');
 
 router.get('/summary', function(req, res) {
@@ -27,10 +27,13 @@ router.get('/summary', function(req, res) {
       apiToken
     ).then((data) => {
       let issues = extract_issue_count(data);
+      let users = extract_users(data);
+
       // Expand summary data for board here.
       console.log("summary data:", issues);
       res.send({ 
-        summary: issues 
+        summary: issues, 
+        users: users
       });
     }).catch((error) => {
       console.log("Error: ", error);
