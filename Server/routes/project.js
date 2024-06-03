@@ -17,6 +17,24 @@ router.get('/create', function(req, res) {
   const confluenceLink = req.query.confluenceLink;
   const user = req.user.UID;
 
+  const validations = [
+    validateParameterLength(project, 255, "Project Name"),
+    validateParameterLength(accessUser, 255, "Access User"),
+    validateParameterLength(accessKey, 255, "Access Key"),
+    validateParameterLength(description, 2048, "Project Description"),
+    validateParameterLength(abbreviation, 8, "Project Abbreviation"),
+    validateParameterLength(jiraLink, 255, "JIRA Link"),
+    validateParameterLength(gitLink, 255, "Git Link"),
+    validateParameterLength(confluenceLink, 255, "Confluence Link")
+  ];
+
+  const errors = validations.filter(validation => validation !== null);
+
+  if (errors.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
+
   pool.request()
   .input('ProjectName', project)
   .input('AccessUser', accessUser)
@@ -34,7 +52,13 @@ router.get('/create', function(req, res) {
   })
   .catch((error) => {
     console.log("Failed project creation: " + error);
-    res.status(500).json({ error: "An error occurred when creating the project"});
+    if (error.number === 51000) {
+      res.status(400).json({ error: "Project with given name already exists" });
+    } 
+    else {
+      res.status(500).json({ error: "An error occurred when creating the project"});
+
+    }
   });
 
 });
@@ -75,6 +99,22 @@ router.get('/change', function(req, res) {
   const new_confluence = req.query.confluenceLink;
   const user = req.user.UID;
 
+  const validations = [
+    validateParameterLength(new_name, 255, "Project Name"),
+    validateParameterLength(new_description, 2048, "Project Description"),
+    validateParameterLength(new_abbreviation, 8, "Project Abbreviation"),
+    validateParameterLength(new_jira, 255, "JIRA Link"),
+    validateParameterLength(new_git, 255, "Git Link"),
+    validateParameterLength(new_confluence, 255, "Confluence Link")
+  ];
+
+  const errors = validations.filter(validation => validation !== null);
+
+  if (errors.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
+  
   get_project_access(user, project)
   .then(() => {
     res.send({ error: "Unimplemented, sorry haha"});
@@ -85,6 +125,40 @@ router.get('/change', function(req, res) {
 
 });
 
+// Get a list of all boards in a project.
+router.get('/boards', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+  
+  get_project_access(user, project)
+  .then(() => {
+    
+    const query = `
+      SELECT b.board_name
+      FROM board b
+      JOIN project p ON b.project_id = p.project_id 
+      WHERE p.project_name = @Project
+    `;
+
+    pool.request()
+    .input('Project', project)
+    .query(query)
+    .then((result) => {
+      const boards = result.recordset;
+
+      res.send({boards: boards});
+    })
+    .catch((error) => {
+      console.log("Error: ", error);
+      res.status(500).json({ error: 'An error occurred while processing your request'});
+    });
+  })
+  .catch((error) => {
+    console.log("error when getting boards: " + error);
+    res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
+  });
+
+})
 // Get all details about all boards in project.
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
@@ -164,7 +238,7 @@ router.get('/projects', function(req, res) {
   const user = req.user.UID;
 
   const query = `
-    SELECT p.project_name
+    SELECT p.project_name, p.project_description
     FROM project p
     JOIN user_project up ON p.project_id = up.project_id
     JOIN [user] u ON up.user_id = u.user_id 
@@ -175,9 +249,14 @@ router.get('/projects', function(req, res) {
   .input('UID', user)
   .query(query)
   .then((result) => {
-    const projectNames = result.recordset.map(record => record.project_name);
+    const projectDetails = result.recordset.map((record) =>  {
+      return { 
+        name: record.project_name,
+        tag: record.project_abbreviation
+      }
+    });
     console.log(`User ${req.user.userName} has access to: ${result.recordset}`);
-    res.send({ projects: projectNames});
+    res.send({ projects: projectDetails});
   })
   .catch((error) => {
     console.log("Could not access user projects: " + error);
@@ -186,5 +265,11 @@ router.get('/projects', function(req, res) {
 
 });
 
+function validateParameterLength(parameter, maxLength, paramName) {
+  if (parameter.length > maxLength) {
+    return { error: `${paramName} too long` };
+  }
+  return null;
+}
 
 module.exports = router;
