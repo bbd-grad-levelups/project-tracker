@@ -51,6 +51,10 @@ router.get('/create', function(req, res) {
   const boardKey = req.query.boardKey;
   const user = req.user.UID;
 
+  if (board.length > 255) {
+    res.status(400).json({ error: "Board name must be shorter than 250 characters"});
+  }
+
   get_project_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
