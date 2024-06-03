@@ -27,7 +27,7 @@ function LoginPage() {
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
         <section className='login-navbar'>
-          <p>Dark Mode</p>
+          <p>{theme.palette.mode} mode</p>
           <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
         </section>
         <section id="login-id" className="login-class">
