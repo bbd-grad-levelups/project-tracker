@@ -54,6 +54,42 @@ async function get_project_access(uid, project) {
       JOIN [user] u ON up.user_id = u.user_id
       JOIN role r ON r.role_id = up.role_id
       WHERE p.project_name = @project
+      AND u.uid = @uid
+    `;
+
+    pool.request()
+      .input('project', project)
+      .input('uid', uid)
+      .query(query)
+      .then((result) => {
+        if (result.recordset.length > 0) {
+          resolve({
+            projectID: result.recordset[0].project_id,
+          });
+        }
+        else {
+          reject("User does not have access to project, or project does not exist");
+        }
+
+      })
+      .catch((error) => {
+        console.log("Database call error: " + error);
+        reject();
+      });
+  });
+}
+
+
+async function get_admin_access(uid, project) {
+  return new Promise((resolve, reject) => {
+
+    const query = `
+      SELECT p.project_id, p.jira_link, p.access_user, p.access_key
+      FROM project p
+      JOIN user_project up ON p.project_id = up.project_id
+      JOIN [user] u ON up.user_id = u.user_id
+      JOIN role r ON r.role_id = up.role_id
+      WHERE p.project_name = @project
       AND r.description = 'Owner'
       AND u.uid = @uid
     `;
@@ -80,8 +116,7 @@ async function get_project_access(uid, project) {
         console.log("Database call error: " + error);
         reject();
       });
-
   });
 }
 
-module.exports = { get_board_access, get_project_access };
+module.exports = { get_board_access, get_project_access, get_admin_access };

@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 
 const { pull_jira_data, extract_issue_count, extract_users } = require('../Utils/Jira.js');
-const { get_board_access, get_project_access} = require('../Utils/AccessControl.js');
+const { get_board_access, get_admin_access} = require('../Utils/AccessControl.js');
 
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
@@ -58,7 +58,7 @@ router.get('/create', function(req, res) {
     res.status(400).json({ error: "Board name must be shorter than 250 characters"});
   }
 
-  get_project_access(user, project)
+  get_admin_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
 
@@ -90,7 +90,7 @@ router.get('/remove', function(req, res) {
   const board = req.query.boardName;
   const user = req.user.UID;
 
-  get_project_access(user, project)
+  get_admin_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
 
