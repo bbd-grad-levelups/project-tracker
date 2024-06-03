@@ -77,4 +77,23 @@ router.get('/remove', function(req, res) {
 
 });
 
+// All users in system
+router.get('/all', function(req, res) {
+
+  const query = `
+    SELECT username
+    FROM [user]
+  `;
+
+  pool.request()
+  .query(query)
+  .then((result) => {
+    res.send(result.recordset);
+  })
+  .catch(() => {
+    res.status(500).json({ error: "An error occurred while processing your request"});
+  })
+
+});
+
 module.exports = router;
