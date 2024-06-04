@@ -8,7 +8,6 @@ import UnselectedContainer from '../components/unselected-container/unselected-c
 import CreateProject from '../components/create-project/create-project'
 import { CssBaseline } from '@mui/material';
 import { darkTheme, lightTheme } from "../theme.jsx"
-import backendPath from '../main.jsx'
 
 function HomePage() {
     try {
@@ -31,7 +30,7 @@ function HomePage() {
 
     const [projects, setProjects] = useState([]);
     useEffect(() => {
-        fetch(`${backendPath}/project/projects`, {method: "GET",
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {method: "GET",
             headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
             .then((response) => response.json())
             .then((data) => {

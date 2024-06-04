@@ -36,7 +36,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
         console.log(params.toString());
 
         try {
-            const response = await fetch(`https://api.project-tracker.projects.bbdgrad.com/project/create?${params.toString()}`, {
+            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
