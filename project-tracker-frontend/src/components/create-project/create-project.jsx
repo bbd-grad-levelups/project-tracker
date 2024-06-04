@@ -51,8 +51,6 @@ function CreateProject() {
     };
 
     return (
-        <div className="create-project">
-            {/* component="form" action="/create" method="POST" */}
             <Container maxWidth="md" sx={{ mt: 3, mb: 3 }}>
                 <Stack spacing={3} alignItems="flex-start" component="form" id="create-project-form" onSubmit={sendProjectData} >
                     <Typography variant="h2">Create a new project</Typography>
@@ -151,7 +149,6 @@ function CreateProject() {
                     </Button>
                 </Stack>
             </Container>
-        </div>
     );
 }
 
