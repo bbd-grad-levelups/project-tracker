@@ -1,19 +1,27 @@
 const jwt = require('jsonwebtoken');
+const aws_jwt = require('aws-jwt-verify');
 
 function oauthMiddleware(req, res, next) {
   // Single user for testing
   var playerName = 'johan';
   var uniqueID = '12491122';
-  console.log("OAuth middleware");
-  console.log("auth: " + req.headers.authorization)
+
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-    console.log("Auth found")
-    req.user = {
-      userName: playerName,
-      UID: uniqueID
-    }
+    let token = req.headers.authorization.split(' ')[1];
     
-    next();
+    if (token === 'blah') {
+      console.log("Auth testing")
+      req.user = {
+        userName: playerName,
+        UID: uniqueID
+      }
+      next();
+    }
+    else {
+      console.log("Cognito token verification")
+      res.status(500).json({ error: "Johan isn't done with OAuth, sorry"});
+    }
+  
   }
   else {
     res.status(403).json({ error: "Unauthorized access"});

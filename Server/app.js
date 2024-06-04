@@ -1,7 +1,6 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const bodyParser = require('body-parser');
 const app = express();
 
 app.use(cors({
@@ -10,6 +9,12 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+var router = express.Router();
+router.get('/', function(req, res) {
+  res.send("helth");
+});
+app.use(router);
+
 app.use(bodyParser.json());
 
 const oauthMiddleware = require('./Middleware/OAuth');
@@ -17,9 +22,6 @@ app.use(oauthMiddleware);
 
 const registrationMiddleware = require('./Middleware/RegisterUser');
 app.use(registrationMiddleware);
-
-const healthRouter = require('./routes/health.js');
-app.use('/', healthRouter);
 
 const userRouter = require('./routes/users.js');
 app.use('/user', userRouter);

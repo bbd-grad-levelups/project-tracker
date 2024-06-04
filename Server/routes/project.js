@@ -308,7 +308,7 @@ router.get('/projects', function(req, res) {
       });
     }
     else {
-      res.status(404).json({ error: "Project not found for user"});
+      res.status(404).json({ error: "No projects found for user"});
     }
   })
   .catch((error) => {
@@ -319,7 +319,7 @@ router.get('/projects', function(req, res) {
 });
 
 function validateParameterLength(parameter, maxLength, paramName) {
-  if (parameter.length > maxLength) {
+  if (parameter != undefined && parameter.length > maxLength) {
     return { error: `${paramName} too long` };
   }
   return null;
