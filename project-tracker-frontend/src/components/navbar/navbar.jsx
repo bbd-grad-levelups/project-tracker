@@ -84,7 +84,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
-                        <img src={logo} edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
+                        <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
                         <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>
                         <Typography sx={{ flexGrow: 1 }}></Typography>
                         <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>

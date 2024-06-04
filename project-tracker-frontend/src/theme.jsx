@@ -11,10 +11,7 @@ const darkTheme = responsiveFontSizes(createTheme({
 
 const lightTheme = responsiveFontSizes(createTheme({
     palette: {
-        mode: 'light',
-        background: {
-            default: '#b3c6d6'
-        }
+        mode: 'light'
     }
 }));
 
