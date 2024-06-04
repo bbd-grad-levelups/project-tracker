@@ -36,7 +36,7 @@ function ProjectGrid({projectName = ''}) {
 
     const [boards, setBoards] = useState([]);
 
-    const token = 'blah'
+    const token = sessionStorage.getItem("idToken");
 
     useEffect(() => {
         fetch(`${backendPath}/project/boards/?projectName=${projectName}`, {method: "GET",
