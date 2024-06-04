@@ -52,7 +52,7 @@ function HomePage() {
                     {selectedItem >= 0 ? (
                         <ProjectGrid key={projects[selectedItem].name} projectName={projects[selectedItem].name}></ProjectGrid>
                     ) : selectedItem == -1 ? (
-                        <CreateProject></CreateProject>
+                        <CreateProject setSelectedItem={setSelectedItem} setProjects={setProjects} projects={projects}></CreateProject>
                     ) : <UnselectedContainer></UnselectedContainer>}
                 </div>
             </div>
