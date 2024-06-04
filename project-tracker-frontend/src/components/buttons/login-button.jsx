@@ -11,7 +11,20 @@ function handleClick() {
 
 const LoginButton = () => {
   return (
-    <Button color="info" onClick={handleClick} id="login-button" size='large'>Login With Google</Button>
+    <Button color="primary" onClick={handleClick} id="login-button" size='Extra large'
+      sx={{
+        ':hover': {
+          bgcolor: 'primary.main', // theme.palette.primary.main
+          color: 'white',
+        },
+      }}
+      titleStyle={{
+        color: "white",
+        fontSize: 16,
+      }}
+
+      style={{ height: '3rem', width: '15rem', border: '2px solid', fontSize: '1.2rem' }}
+    >Login With Cognito</Button>
   );
 };
 
@@ -30,7 +43,7 @@ if (location.hash.includes("access_token")) {
 
 function loginUser() {
   // let resp
-  window.location.href = window.location.protocol+"//"+window.location.host;
-  console.log(window.location.protocol+"//"+window.location.host);
+  window.location.href = window.location.protocol + "//" + window.location.host;
+  console.log(window.location.protocol + "//" + window.location.host);
 
 }

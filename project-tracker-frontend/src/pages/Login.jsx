@@ -6,7 +6,6 @@ import { CssBaseline, Switch } from '@mui/material';
 import { darkTheme, lightTheme } from "../theme.jsx";
 
 
-
 function LoginPage() {
   try {
     if (sessionStorage.getItem("token")) {
@@ -21,18 +20,23 @@ function LoginPage() {
     setDarkMode(!darkMode);
   };
   const theme = darkMode ? darkTheme : lightTheme;
-
+  const themeWord = theme.palette.mode == 'dark' ? 'Dark' : 'Light'
+  console.log(theme.palette.mode);
   return (
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
-        <section className='login-navbar'>
-          <p>{theme.palette.mode} mode</p>
-          <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
-        </section>
-        <section id="login-id" className="login-class">
-          <h1>Welcome to Project-Tracker!</h1>
-          <LoginButton />
+        <section className='login-page'>
+          <section className='login-navbar'>
+            <p>{themeWord} mode</p>
+            <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
+          </section>
+          <section id="login-id" className="login-class">
+            <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
+            <h2>Welcome to</h2>
+            <h1> Project-Tracker!</h1>
+            <LoginButton />
+          </section>
         </section>
       </ThemeProvider>
     </>
