@@ -6,6 +6,7 @@ async function userRegistration(req, res, next) {
   if (req.user.UID != undefined) {
     const userUID = req.user.UID.toString();
     const userName = req.user.userName;
+    const email = req.user.email;
     const query = `SELECT * FROM [user] u WHERE uid = @UID`;
 
     pool.request()
@@ -14,7 +15,7 @@ async function userRegistration(req, res, next) {
     .then(async (result) => {
       if (result.recordset.length === 0) {
         console.log(`Adding user: ${userName} ${userUID}`);
-        await addUser(userName, userUID);
+        await addUser(userName, userUID, email);
       }
 
       next();
@@ -29,12 +30,13 @@ async function userRegistration(req, res, next) {
   }
 }
 
-async function addUser(userName, UID) {
-  const query = `INSERT INTO [user] (username, uid, email) VALUES (@username, @uid, 'none@nowhere.com')`;
+async function addUser(userName, UID, email) {
+  const query = `INSERT INTO [user] (username, uid, email) VALUES (@username, @uid, @email)`;
 
   await pool.request()
-  .input('username', sql.VarChar, userName)
-  .input('uid', sql.VarChar, UID)
+  .input('username', userName)
+  .input('uid', UID)
+  .input('email', email)
   .query(query)
   .then((insertResult) => {
     console.log('New user created:', insertResult);

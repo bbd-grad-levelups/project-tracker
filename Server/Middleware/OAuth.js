@@ -1,27 +1,39 @@
-const jwt = require('jsonwebtoken');
-const aws_jwt = require('aws-jwt-verify');
+const jwt_aws = require('aws-jwt-verify');
+
+// Verifier that expects valid access tokens:
+const verifier = jwt_aws.CognitoJwtVerifier.create({
+  userPoolId: process.env.projecttracker_userpool_id,
+  tokenUse: "id",
+  clientId: process.env.projecttracker_client_id
+});
 
 function oauthMiddleware(req, res, next) {
-  // Single user for testing
-  var playerName = 'johan';
-  var uniqueID = '12491122';
-
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     let token = req.headers.authorization.split(' ')[1];
     
     if (token === 'blah') {
       console.log("Auth testing")
       req.user = {
-        userName: playerName,
-        UID: uniqueID
+        userName: 'johan',
+        UID: '12491122'
       }
       next();
     }
     else {
-      console.log("Cognito token verification")
-      res.status(500).json({ error: "Johan isn't done with OAuth, sorry"});
+        verifier.verify(token)
+        .then((data) => {
+          req.user = {
+            userName: data.nickname,
+            UID: data.identities[0].userId,
+            email: data.email
+          }
+          next();
+        })
+        .catch((error) => {
+          console.log("error: " + error);
+          res.status(403).json({ error: "Unauthorized access, token validation failed"});
+        });
     }
-  
   }
   else {
     res.status(403).json({ error: "Unauthorized access"});
@@ -29,4 +41,8 @@ function oauthMiddleware(req, res, next) {
 }
 
 module.exports = oauthMiddleware;
+
+
+
+
 
