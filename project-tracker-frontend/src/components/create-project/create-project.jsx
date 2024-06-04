@@ -44,6 +44,7 @@ function CreateProject() {
             });
             const data = await response.json();
             console.log('Success:', data);
+            location.href = window.location.protocol + "//" + window.location.host
         } catch (error) {
             console.error('Error:', error);
         }
