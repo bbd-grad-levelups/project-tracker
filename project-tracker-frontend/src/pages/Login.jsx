@@ -32,13 +32,12 @@ function LoginPage() {
             <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
           </section>
           <section id="login-id" className="login-class">
-            <img src='.\src\assets\background-tracker.svg' alt='login-symbol' style={{ width: 15 + 'rem', height: 10 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
-            <h3>Welcome to</h3>
+            <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
+            <h2>Welcome to</h2>
             <h1> Project-Tracker!</h1>
             <LoginButton />
           </section>
         </section>
-
       </ThemeProvider>
     </>
   )

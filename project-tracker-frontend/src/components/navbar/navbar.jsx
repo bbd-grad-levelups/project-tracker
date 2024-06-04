@@ -37,6 +37,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
                     Logout
                 </Button>
+                <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 3.5 + 'rem', mixBlendMode: 'unset', marginLeft: '2rem' }}></img>
             </Stack>
             <Dialog
                 open={open}

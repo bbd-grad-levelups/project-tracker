@@ -11,7 +11,7 @@ function handleClick() {
 
 const LoginButton = () => {
   return (
-    <Button color="info" onClick={handleClick} id="login-button" size='Extra large'
+    <Button color="primary" onClick={handleClick} id="login-button" size='Extra large'
       sx={{
         ':hover': {
           bgcolor: 'primary.main', // theme.palette.primary.main
@@ -24,7 +24,7 @@ const LoginButton = () => {
       }}
 
       style={{ height: '3rem', width: '15rem', border: '2px solid', fontSize: '1.2rem' }}
-    >Login With Google</Button>
+    >Login With Cognito</Button>
   );
 };
 
