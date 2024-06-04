@@ -40,7 +40,7 @@ function ProjectGrid({projectName = ''}) {
 
     useEffect(() => {
         fetch(`${backendPath}/project/boards/?projectName=${projectName}`, {method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("token")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setBoards([{board_name: "All Boards"}].concat(data.boards));

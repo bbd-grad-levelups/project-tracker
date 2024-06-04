@@ -34,7 +34,7 @@ function HomePage() {
     const [projects, setProjects] = useState([]);
     useEffect(() => {
         fetch(`${backendPath}/project/projects`, {method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("token")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setProjects(data.projectDetails);
