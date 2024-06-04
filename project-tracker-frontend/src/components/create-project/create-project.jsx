@@ -36,7 +36,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
         console.log(params.toString());
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
+            const response = await fetch(`https://api.project-tracker.projects.bbdgrad.com/project/create?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -44,8 +44,13 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
             });
             const data = await response.json();
             console.log('Success:', data);
-            setSelectedItem(projects.length);
-            setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}))
+            if (data.error == null){
+                setSelectedItem(projects.length);
+                setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}));
+            } else {
+                alert(data.error)
+            }
+            
         } catch (error) {
             console.error('Error:', error);
             alert("Project could not be created, please try again later")
