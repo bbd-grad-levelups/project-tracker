@@ -65,6 +65,9 @@ async function get_project_access(uid, project) {
         if (result.recordset.length > 0) {
           resolve({
             projectID: result.recordset[0].project_id,
+            user: result.recordset[0].access_user,
+            token: result.recordset[0].access_key,
+            project: result.recordset[0].jira_link
           });
         }
         else {
@@ -104,7 +107,7 @@ async function get_admin_access(uid, project) {
             projectID: result.recordset[0].project_id,
             user: result.recordset[0].access_user,
             token: result.recordset[0].access_key,
-            project: result.recordset[0].jira_link,
+            project: result.recordset[0].jira_link
           });
         }
         else {
