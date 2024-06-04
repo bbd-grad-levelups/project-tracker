@@ -48,7 +48,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
             setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}))
         } catch (error) {
             console.error('Error:', error);
-            location.href = window.location.protocol + "//" + window.location.host + "/error";
+            alert("Project could not be created, please try again later")
         }
     };
 
