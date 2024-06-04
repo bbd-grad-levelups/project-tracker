@@ -3,7 +3,7 @@ import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 
-function CreateProject() {
+function CreateProject({setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = []}) {
 
     const token = sessionStorage.getItem("idToken")
     const [formData, setFormData] = useState({
@@ -44,9 +44,11 @@ function CreateProject() {
             });
             const data = await response.json();
             console.log('Success:', data);
-            location.href = window.location.protocol + "//" + window.location.host
+            setSelectedItem(projects.length);
+            setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}))
         } catch (error) {
             console.error('Error:', error);
+            alert("Project could not be created, please try again later")
         }
     };
 
