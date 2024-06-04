@@ -1,8 +1,12 @@
 import './navbar.css'
-import { Switch, Button, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete } from '@mui/material';
+import { Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/logo.svg";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import PersonRemove from '@mui/icons-material/PersonRemove';
+import Settings from '@mui/icons-material/Settings';
 
 function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, project }) {
 
@@ -12,6 +16,25 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const [open, setOpen] = useState(false);
     const [memberOpen, setMemberOpen] = useState(false);
     const [projectData, setProjectData] = useState(undefined);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const projectOpen = Boolean(anchorEl);
+    const [userInfo, setUserInfo] = useState(undefined);
+
+    const getUserInfo = async () => {
+        try {
+            const response = await fetch(`https://test-project.auth.eu-west-1.amazoncognito.com/oauth2/userInfo`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + sessionStorage.getItem("token")
+                },
+            });
+            const data = await response.json();
+            // console.log('Success:', data);
+            setUserInfo(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     const handleClickOpen = async () => {
         try {
@@ -44,23 +67,64 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         setMemberOpen(false);
     };
 
+    const handleProjectClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleProjectClose = () => {
+        setAnchorEl(null);
+    };
+
+    useEffect(() => {
+        getUserInfo();
+    }, []);
+
     return (
         <React.Fragment>
-            <Stack direction={'row'} spacing={3} alignItems={'center'} justifyContent={'center'} className="navbar">
-                <img src={logo} className="logo" alt="Logo" onClick={() => func(-1)} />
-                {isAdmin ? (
-                    <>
-                        <Button variant="contained" color="secondary" type="submit" size="medium" onClick={handleClickOpen}>Edit Project</Button>
-                        <Button variant="contained" color="secondary" type="submit" size="medium" onClick={handleMemberClickOpen}>Edit Members</Button>
-                    </>
-                ) : null
-                }
-                <Typography variant="body1">{theme.palette.mode} mode</Typography>
-                <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
-                <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
-                    Logout
-                </Button>
-            </Stack>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
+                        <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>
+                        <Typography sx={{ flexGrow: 1 }}></Typography>
+                        <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>
+                        <Tooltip title='Display Mode'>
+                            <IconButton sx={{
+                                ml: 2, mr: 1, '&:focus': {
+                                    outline: 'none',
+                                }
+                            }} onClick={toggleDarkTheme} color="inherit" size='large'>
+                                {theme.palette.mode === 'light' ? <Brightness7Icon /> : <Brightness4Icon />}
+                            </IconButton>
+                        </Tooltip>
+                        {isAdmin ? (
+                            <>
+                                <Tooltip title='Project Settings'>
+                                    <IconButton
+                                        onClick={handleProjectClick}
+                                        size='large'
+                                        sx={{
+                                            mr: 2, '&:focus': {
+                                                outline: 'none',
+                                            }
+                                        }}
+                                        color="inherit"
+                                        aria-controls={projectOpen ? 'project-menu' : undefined}
+                                        aria-haspopup='true'
+                                        aria-expanded={projectOpen ? 'true' : undefined}
+                                    >
+                                        <Settings />
+                                    </IconButton>
+                                </Tooltip>
+                            </>
+                        ) : null}
+                        <Button variant="contained" onClick={logout} color="secondary" type="submit" size="small">
+                            Logout
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+            </Box>
+
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -189,6 +253,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     <Button type="submit">Save</Button>
                 </DialogActions>
             </Dialog>
+
             <Dialog
                 open={memberOpen}
                 onClose={handleMemberClose}
@@ -224,6 +289,55 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     <Button type="submit">Save</Button>
                 </DialogActions>
             </Dialog>
+
+            <Menu
+                anchorEl={anchorEl}
+                id="project-menu"
+                open={projectOpen}
+                onClose={handleProjectClose}
+                onClick={handleProjectClose}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: 'visible',
+                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                        mt: 1.5,
+                        '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        '&::before': {
+                            content: '""',
+                            display: 'block',
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: 'background.paper',
+                            transform: 'translateY(-50%) rotate(45deg)',
+                            zIndex: 0,
+                        },
+                    },
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+            >
+                <MenuItem onClick={() => { handleProjectClose(); handleMemberClickOpen(); }}>
+                    <ListItemIcon>
+                        <PersonRemove fontSize="small" />
+                    </ListItemIcon>
+                    Edit Project Members
+                </MenuItem>
+                <MenuItem onClick={() => { handleProjectClose(); handleClickOpen(); }}>
+                    <ListItemIcon>
+                        <Settings fontSize="small" />
+                    </ListItemIcon>
+                    Edit Project
+                </MenuItem>
+            </Menu>
         </React.Fragment>
     )
 }
