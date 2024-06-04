@@ -15,7 +15,8 @@ function oauthMiddleware(req, res, next) {
       console.log("Auth testing")
       req.user = {
         userName: 'johan',
-        UID: '12491122'
+        UID: '12491122',
+        email: 'nowhere@nope.com'
       }
       next();
     }
@@ -31,7 +32,9 @@ function oauthMiddleware(req, res, next) {
         })
         .catch((error) => {
           console.log("error: " + error);
-          res.status(403).json({ error: "Unauthorized access, token validation failed"});
+          res.status(403).json({ error: "Unauthorized access, token validation failed",
+             specific: error
+          });
         });
     }
   }
