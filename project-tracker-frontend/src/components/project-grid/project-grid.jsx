@@ -32,7 +32,25 @@ import { Bar, Pie } from 'react-chartjs-2';
 function ProjectGrid({projectName = ''}) {
     const [expanded, setExpanded] = useState(true);
 
-    const token = ''
+    const [board, setBoard] = useState('All Boards');
+
+    const [boards, setBoards] = useState([]);
+
+    const token = 'blah'
+
+    useEffect(() => {
+        fetch(`${backendPath}/project/boards/?projectName=${projectName}`, {method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}})
+            .then((response) => response.json())
+            .then((data) => {
+                setBoards([{board_name: "All Boards"}].concat(data.boards));
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }, []);
+
+    
     const [projectLinks, setProjectLinks] = useState([]);
     useEffect(() => {
         fetch(`${backendPath}/project/info/?projectName=${projectName}`, {method: "GET",
@@ -47,21 +65,39 @@ function ProjectGrid({projectName = ''}) {
     }, []);
 
     const [projectSummary, setProjectSummary] = useState([]);
+    const [projectMembers, setProjectMembers] = useState([]);
     useEffect(() => {
-        fetch(`${backendPath}/project/summary/?projectName=${projectName}`, {method: "GET",
+        if (board=='All Boards'){
+            fetch(`${backendPath}/project/summary/?projectName=${projectName}`, {method: "GET",
             headers: {"Authorization": `Bearer ${token}`}})
             .then((response) => response.json())
             .then((data) => {
                 setProjectSummary(data.summary);
+                setProjectMembers(data.users);
             })
             .catch((err) => {
                 console.log(err.message);
             });
-    }, []);
+        } else {
+            fetch(`${backendPath}/board/summary/?projectName=${projectName}&boardName=${board}`, {method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}})
+            .then((response) => response.json())
+            .then((data) => {
+                setProjectSummary(data.summary);
+                setProjectMembers(data.users);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+        }
+        
+    }, [board]);
     var members = []
-    var startDate = Date.now().toString()
-    var stage = 'QA'
-    members = [{name: 'Thabo Ladubwe', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3},{name: '1', role: '2', numTickets: 3}]
+
+    for (var label in projectMembers) {
+        members.push({name: label, numTickets: projectMembers[label]})
+    }
+
     const pieData = {
         labels: members.map(member => {
             return member.name
@@ -126,15 +162,11 @@ function ProjectGrid({projectName = ''}) {
         
     var barLabels = [];
     var barLabelData = [];
-    var total = 0;
     
-    for (var label in projectSummary) {
-        barLabels.push(label)
-        barLabelData.push(projectSummary[label]);
-        total += projectSummary[label];
+    for (var bLabel in projectSummary) {
+        barLabels.push(bLabel)
+        barLabelData.push(projectSummary[bLabel]);
     }
-
-    var progress = projectSummary["Done"]/total*100;
     
     const barData = {
       labels: barLabels,
@@ -146,9 +178,7 @@ function ProjectGrid({projectName = ''}) {
         }
       ],
     };
-    const [board, setBoard] = useState('Board 1');
-
-    const boards = [{boardName: 'Board 1'}, {boardName: 'Board 2'}]
+    
 
     const handleChange = (event) => {
       setBoard(event.target.value);
@@ -175,7 +205,7 @@ function ProjectGrid({projectName = ''}) {
                                     >
                                         {boards.map((board) => {
                                                 return (
-                                                    <MenuItem key={board.boardName} value={board.boardName}>{board.boardName}</MenuItem>
+                                                    <MenuItem key={board.board_name} value={board.board_name}>{board.board_name}</MenuItem>
                                                 )
                                             })}
                                     </Select>
@@ -209,9 +239,7 @@ function ProjectGrid({projectName = ''}) {
                                     <Bar options={barOptions} data={barData}/>
                                 </div>
                                 <article className="info-card">
-                                    <h3>Start Date: {startDate}</h3>
-                                    <h3>Current Progress: {progress}%</h3>
-                                    <h3>Stage: {stage}</h3>
+                                    <p>{projectLinks.description}</p>
                                 </article>
                             </section>
                         </section>
