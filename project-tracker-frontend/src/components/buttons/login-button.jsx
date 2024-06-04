@@ -11,7 +11,7 @@ function handleClick() {
 
 const LoginButton = () => {
   return (
-    <Button color="info" onClick={handleClick} id="login-button" size='large'>Login With Google</Button>
+    <Button color="info" onClick={handleClick} id="login-button" size='Extra large' style={{height: '30rem', width : '20rem'}}>Login With Google</Button>
   );
 };
 

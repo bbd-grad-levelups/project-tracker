@@ -6,7 +6,6 @@ import { CssBaseline, Switch } from '@mui/material';
 import { darkTheme, lightTheme } from "../theme.jsx";
 
 
-
 function LoginPage() {
   try {
     if (sessionStorage.getItem("token")) {
@@ -26,14 +25,18 @@ function LoginPage() {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline enableColorScheme />
-        <section className='login-navbar'>
-          <p>Dark Mode</p>
-          <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
+        <section className='login-page'>
+          <section className='login-navbar'>
+            <p>Dark Mode</p>
+            <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
+          </section>
+          <section id="login-id" className="login-class">
+            <img src='.\src\assets\background-tracker.svg' alt='login-symbol' style={{ width: 15 + 'rem', height: 10 + 'rem', mixBlendMode: 'unset', marginTop:10}}></img>
+            <h1>Welcome to Project-Tracker!</h1>
+            <LoginButton />
+          </section>
         </section>
-        <section id="login-id" className="login-class">
-          <h1>Welcome to Project-Tracker!</h1>
-          <LoginButton />
-        </section>
+
       </ThemeProvider>
     </>
   )
