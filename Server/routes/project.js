@@ -56,7 +56,7 @@ router.get('/create', function(req, res) {
       res.status(400).json({ error: "Project with given name already exists" });
     } 
     else {
-      res.status(500).json({ error: "An error occurred when creating the project"});
+      res.status(500).json({ error: "An error occurred when creating the project", data: error});
 
     }
   });
@@ -79,7 +79,7 @@ router.get('/remove', function(req, res) {
     })
     .catch((error) => {
       console.log("Failed project deletion: " + error);
-      res.status(500).json({ error: "An error occurred when removing the project"});
+      res.status(500).json({ error: "An error occurred when removing the project", data: error});
     });
   })
   .catch(() => {
@@ -117,7 +117,7 @@ router.get('/change', function(req, res) {
   
   get_admin_access(user, project)
   .then(() => {
-    res.send({ error: "Unimplemented, sorry haha"});
+    res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
   })
   .catch(() => {
     res.status(404).json({ error: "User does not have access to project, or project does not exist"})

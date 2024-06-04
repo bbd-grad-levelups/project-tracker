@@ -75,7 +75,7 @@ router.get('/create', function(req, res) {
     })
     .catch((error) => {
       console.log("Error while creating new board: " + error);
-      res.status(500).json({ error: "System error"});
+      res.status(500).json({ error: "System error", data: error});
     });
 
   })
