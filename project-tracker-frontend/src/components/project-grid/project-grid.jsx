@@ -36,11 +36,9 @@ function ProjectGrid({projectName = ''}) {
 
     const [boards, setBoards] = useState([]);
 
-    const token = sessionStorage.getItem("idToken");
-
     useEffect(() => {
         fetch(`${backendPath}/project/boards/?projectName=${projectName}`, {method: "GET",
-            headers: {"Authorization": `Bearer ${sessionStorage.getItem("token")}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setBoards([{board_name: "All Boards"}].concat(data.boards));
@@ -54,7 +52,7 @@ function ProjectGrid({projectName = ''}) {
     const [projectLinks, setProjectLinks] = useState([]);
     useEffect(() => {
         fetch(`${backendPath}/project/info/?projectName=${projectName}`, {method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setProjectLinks(data);
@@ -69,7 +67,7 @@ function ProjectGrid({projectName = ''}) {
     useEffect(() => {
         if (board=='All Boards'){
             fetch(`${backendPath}/project/summary/?projectName=${projectName}`, {method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setProjectSummary(data.summary);
@@ -80,7 +78,7 @@ function ProjectGrid({projectName = ''}) {
             });
         } else {
             fetch(`${backendPath}/board/summary/?projectName=${projectName}&boardName=${board}`, {method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}})
+            headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
             .then((response) => response.json())
             .then((data) => {
                 setProjectSummary(data.summary);
