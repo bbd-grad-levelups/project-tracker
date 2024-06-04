@@ -29,7 +29,7 @@ function HomePage() {
 
     const [selectedItem, setSelectedItem] = useState(-2)
 
-    const token = ''
+    const token = 'blah'
 
     const [projects, setProjects] = useState([]);
     useEffect(() => {
@@ -37,7 +37,7 @@ function HomePage() {
             headers: {"Authorization": `Bearer ${token}`}})
             .then((response) => response.json())
             .then((data) => {
-                setProjects(data.projects);
+                setProjects(data.projectDetails);
             })
             .catch((err) => {
                 console.log(err.message);
@@ -52,7 +52,7 @@ function HomePage() {
                 <div className='content'>
                     <SideBar func={setSelectedItem} projects={projects}></SideBar>
                     {selectedItem >= 0 ? (
-                        <ProjectGrid key={projects[selectedItem].project_name} projectName={projects[selectedItem].project_name}></ProjectGrid>
+                        <ProjectGrid key={projects[selectedItem].name} projectName={projects[selectedItem].name}></ProjectGrid>
                     ) : selectedItem == -1 ? (
                         <CreateProject></CreateProject>
                     ) : <UnselectedContainer></UnselectedContainer>}

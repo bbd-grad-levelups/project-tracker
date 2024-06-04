@@ -241,7 +241,7 @@ router.get('/info', function(req, res) {
   get_project_access(user, project)
   .then(() => {
     const query = `
-      SELECT p.jira_link, p.git_link, p.confluence_link
+      SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description
       FROM project p
       JOIN user_project up ON p.project_id = up.project_id
       JOIN [user] u ON up.user_id = u.user_id
@@ -258,7 +258,6 @@ router.get('/info', function(req, res) {
         res.send({ 
           projectName : project,
           description: result.recordset[0].project_description,
-          abbreviation: result.recordset[0].project_abbreviation,
           jira: result.recordset[0].jira_link,
           git: result.recordset[0].git_link,
           confluence: result.recordset[0].confluence_link
