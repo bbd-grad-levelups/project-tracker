@@ -18,6 +18,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const handleClose = () => {
         setOpen(false);
     };
+    const themeWord = theme.palette.mode == 'dark' ? 'Dark' : 'Light'
 
     return (
         <React.Fragment>
@@ -31,7 +32,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     </>
                 ) : null
                 }
-                <Typography variant="body1">{theme.palette.mode} mode</Typography>
+                <Typography variant="body1">{themeWord} mode</Typography>
                 <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
                 <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
                     Logout
