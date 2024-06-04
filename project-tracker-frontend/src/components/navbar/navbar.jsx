@@ -1,5 +1,5 @@
 import './navbar.css'
-import { Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
+import { useMediaQuery, Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/logo.svg";
 import React, { useState, useEffect } from 'react';
@@ -19,6 +19,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const [anchorEl, setAnchorEl] = React.useState(null);
     const projectOpen = Boolean(anchorEl);
     const [userInfo, setUserInfo] = useState(undefined);
+    const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
     const getUserInfo = async () => {
         try {
@@ -85,9 +86,9 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 <AppBar position="static">
                     <Toolbar>
                         <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
-                        <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>
-                        <Typography sx={{ flexGrow: 1 }}></Typography>
-                        <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>
+                        {!isSmallScreen && <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>}
+                        <Typography sx={{ flexGrow: 1, mr: 1, ml: 1 }}></Typography>
+                        {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>}
                         <Tooltip title='Display Mode'>
                             <IconButton sx={{
                                 ml: 2, mr: 1, '&:focus': {
