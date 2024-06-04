@@ -18,7 +18,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const handleClose = () => {
         setOpen(false);
     };
-    const themeWord = theme.palette.mode == 'dark' ? 'Dark' : 'Light'
 
     return (
         <React.Fragment>
