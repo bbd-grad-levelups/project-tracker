@@ -32,12 +32,12 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     </>
                 ) : null
                 }
-                <Typography variant="body1">{themeWord} mode</Typography>
+                <Typography variant="body1">{theme.palette.mode} mode</Typography>
                 <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
                 <Button variant="contained" onClick={logout} color="secondary" type="submit" size="medium">
                     Logout
                 </Button>
-                <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 3.5 + 'rem', mixBlendMode: 'unset', marginLeft: '2rem' }}></img>
+                {/* <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 3.5 + 'rem', mixBlendMode: 'unset', marginLeft: '2rem' }}></img> */}
             </Stack>
             <Dialog
                 open={open}
