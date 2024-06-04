@@ -1,22 +1,47 @@
 import './navbar.css'
-import { Switch, Button, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@mui/material';
+import { Switch, Button, Typography, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/logo.svg";
 import React, { useState } from 'react';
 
-function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') } }) {
+function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, project }) {
 
     const theme = useTheme();
     var isAdmin = true;
 
     const [open, setOpen] = useState(false);
+    const [memberOpen, setMemberOpen] = useState(false);
+    const [projectData, setProjectData] = useState(undefined);
 
-    const handleClickOpen = () => {
+    const handleClickOpen = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
+                },
+            });
+            const data = await response.json();
+            console.log('Success:', data);
+            setProjectData(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
         setOpen(true);
     };
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleMemberClickOpen = () => {
+        setMemberOpen(true);
+        console.log(project);
+    };
+
+    const handleMemberClose = () => {
+        setMemberOpen(false);
     };
 
     return (
@@ -26,8 +51,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 {isAdmin ? (
                     <>
                         <Button variant="contained" color="secondary" type="submit" size="medium" onClick={handleClickOpen}>Edit Project</Button>
-                        <Button variant="contained" color="secondary" type="submit" size="medium">Edit Members</Button>
-                        <Button variant="contained" color="secondary" type="submit" size="medium">Edit Links</Button>
+                        <Button variant="contained" color="secondary" type="submit" size="medium" onClick={handleMemberClickOpen}>Edit Members</Button>
                     </>
                 ) : null
                 }
@@ -162,6 +186,41 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
+                    <Button type="submit">Save</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={memberOpen}
+                onClose={handleMemberClose}
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        const projectName = formJson.projectName;
+                        console.log(projectName);
+                        console.log(formJson);
+                        //TODO: update members
+                        handleMemberClose();
+                    },
+                }}
+            >
+                <DialogTitle>Edit Members</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please select the member you would like to remove.
+                    </DialogContentText>
+                    <Autocomplete
+                        disablePortal
+                        id="member-select"
+                        options={['test1', 'test2']}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Member" />}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleMemberClose}>Cancel</Button>
                     <Button type="submit">Save</Button>
                 </DialogActions>
             </Dialog>

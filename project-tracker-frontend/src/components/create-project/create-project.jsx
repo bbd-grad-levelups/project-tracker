@@ -5,6 +5,7 @@ import React, { useState } from "react";
 
 function CreateProject() {
 
+    const token = sessionStorage.getItem("idToken")
     const [formData, setFormData] = useState({
         projectName: '',
         projectAbbreviation: '',
@@ -38,7 +39,7 @@ function CreateProject() {
             const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Bearer ' + 'testToken'
+                    'Authorization': 'Bearer ' + token
                 },
             });
             const data = await response.json();
@@ -66,7 +67,7 @@ function CreateProject() {
                         onChange={handleChange}
                     />
                     <TextField
-                        inputProps={{ maxLength: 5 }}
+                        inputProps={{ maxLength: 8 }}
                         required
                         name="projectAbbreviation"
                         label="Project Abbreviation"
@@ -90,7 +91,7 @@ function CreateProject() {
                         onChange={handleChange}
                     />
                     <TextField
-                        inputProps={{ maxLength: 5 }}
+                        inputProps={{ maxLength: 255 }}
                         required
                         name="accessUser"
                         label="Access User"
@@ -102,7 +103,7 @@ function CreateProject() {
                         onChange={handleChange}
                     />
                     <TextField
-                        inputProps={{ maxLength: 5 }}
+                        inputProps={{ maxLength: 255 }}
                         required
                         name="accessKey"
                         label="Access Key"
@@ -130,7 +131,6 @@ function CreateProject() {
                         label="Confluence Link"
                         inputMode="url"
                         fullWidth={true}
-                        required
                         type="url"
                         value={formData.confluenceLink}
                         onChange={handleChange}
@@ -141,7 +141,6 @@ function CreateProject() {
                         label="Github Link"
                         inputMode="url"
                         fullWidth={true}
-                        required
                         type="url"
                         value={formData.githubLink}
                         onChange={handleChange}

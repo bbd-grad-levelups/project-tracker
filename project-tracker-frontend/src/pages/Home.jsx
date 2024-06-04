@@ -12,7 +12,7 @@ import backendPath from '../main.jsx'
 
 function HomePage() {
     try {
-        if (!sessionStorage.getItem("token")) {
+        if (!sessionStorage.getItem("idToken")) {
             location.href = window.location.protocol + "//" + window.location.host + "/login";
         }
     } catch (e) {
@@ -28,6 +28,8 @@ function HomePage() {
     const theme = darkMode ? darkTheme : lightTheme;
 
     const [selectedItem, setSelectedItem] = useState(-2)
+
+    const token = sessionStorage.getItem("idToken")
 
     const [projects, setProjects] = useState([]);
     useEffect(() => {
@@ -46,7 +48,7 @@ function HomePage() {
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme />
             <div className='page'>
-                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem} />
+                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem} project={projects && projects[selectedItem] ? projects[selectedItem] : {}} />
                 <div className='content'>
                     <SideBar func={setSelectedItem} projects={projects}></SideBar>
                     {selectedItem >= 0 ? (
