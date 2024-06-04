@@ -1,10 +1,10 @@
 const sql = require('mssql');
 
 const config = {
-  server: process.env.projecttracker_db_endpoint,
+  server: 'project-tracker-db.cex3uty77nu9.eu-west-1.rds.amazonaws.com',
   database: 'ProjectTrackerDB',
-  user: process.env.projecttracker_db_user,
-  password: process.env.projecttracker_db_password,
+  user: 'dbadmin',
+  password: 'M4T!#EJvk->tfiwSaSJ2)DLy[%~Z',
   options: {
     trustedConnection: true,
     trustServerCertificate: true
