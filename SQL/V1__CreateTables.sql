@@ -12,6 +12,8 @@ CREATE TABLE [role] (
 );
 GO
 
+INSERT INTO [role] ([description]) VALUES ('Owner'), ('User');
+
 CREATE TABLE project (
 	project_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
   project_description VARCHAR(2048),
@@ -19,9 +21,9 @@ CREATE TABLE project (
 	project_name VARCHAR(255) NOT NULL,
 	access_user VARCHAR(255) NOT NULL,
 	access_key VARCHAR(255) NOT NULL,
-	jira_link VARCHAR(255) NOT NULL UNIQUE,
-	git_link VARCHAR(255) UNIQUE,
-	confluence_link VARCHAR(255) UNIQUE
+	jira_link VARCHAR(255) NOT NULL,
+	git_link VARCHAR(255),
+	confluence_link VARCHAR(255)
 );
 GO
 

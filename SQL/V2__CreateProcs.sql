@@ -18,33 +18,41 @@ BEGIN
 
         BEGIN TRANSACTION;
 
-        INSERT INTO project (
-          project_name, 
-          access_user,
-          access_key, 
-          project_description, 
-          project_abbreviation, 
-          jira_link, 
-          git_link, 
-          confluence_link
-        )
-        OUTPUT inserted.project_id INTO @ProjectID
-        VALUES (@ProjectName, @AccessUser, @AccessKey, @Description, @Abbrev, @Jira, @Git, @Conf);
+        -- Check if the project already exists
+        IF EXISTS (SELECT 1 FROM project WHERE project_name = @ProjectName)
+        BEGIN
+            THROW 51000, 'Project already exists', 1;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO project (
+              project_name, 
+              access_user,
+              access_key, 
+              project_description, 
+              project_abbreviation, 
+              jira_link, 
+              git_link, 
+              confluence_link
+            )
+            OUTPUT inserted.project_id INTO @ProjectID
+            VALUES (@ProjectName, @AccessUser, @AccessKey, @Description, @Abbrev, @Jira, @Git, @Conf);
 
-        DECLARE @InsertedProjectID INT;
-        SELECT @InsertedProjectID = ID FROM @ProjectID;
-        
-        
-        INSERT INTO user_project (project_id, role_id, user_id)
-        VALUES (
-          @InsertedProjectID,
-          (SELECT role_id FROM [role] WHERE [description] = 'Owner'),
-          (SELECT user_id FROM [user] WHERE [uid] = @User)
-        )
+            DECLARE @InsertedProjectID INT;
+            SELECT @InsertedProjectID = ID FROM @ProjectID;
+            
+            
+            INSERT INTO user_project (project_id, role_id, user_id)
+            VALUES (
+              @InsertedProjectID,
+              (SELECT role_id FROM [role] WHERE [description] = 'Owner'),
+              (SELECT user_id FROM [user] WHERE [uid] = @User)
+            )
 
-        COMMIT TRANSACTION;
+            COMMIT TRANSACTION;
 
-        RETURN 0;
+            RETURN 0;
+        END
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0

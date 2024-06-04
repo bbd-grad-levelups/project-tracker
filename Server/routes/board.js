@@ -4,8 +4,8 @@ const sql = require('mssql');
 var express = require('express');
 var router = express.Router();
 
-const { pull_jira_data, extract_issue_count } = require('../Utils/Jira.js');
-const { get_board_access, get_project_access} = require('../Utils/AccessControl.js');
+const { pull_jira_data, extract_issue_count, extract_users } = require('../Utils/Jira.js');
+const { get_board_access, get_admin_access} = require('../Utils/AccessControl.js');
 
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
@@ -27,10 +27,13 @@ router.get('/summary', function(req, res) {
       apiToken
     ).then((data) => {
       let issues = extract_issue_count(data);
+      let users = extract_users(data);
+
       // Expand summary data for board here.
       console.log("summary data:", issues);
       res.send({ 
-        summary: issues 
+        summary: issues, 
+        users: users
       });
     }).catch((error) => {
       console.log("Error: ", error);
@@ -51,7 +54,11 @@ router.get('/create', function(req, res) {
   const boardKey = req.query.boardKey;
   const user = req.user.UID;
 
-  get_project_access(user, project)
+  if (board.length > 255) {
+    res.status(400).json({ error: "Board name must be shorter than 250 characters"});
+  }
+
+  get_admin_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
 
@@ -68,7 +75,7 @@ router.get('/create', function(req, res) {
     })
     .catch((error) => {
       console.log("Error while creating new board: " + error);
-      res.status(500).json({ error: "System error"});
+      res.status(500).json({ error: "System error", data: error});
     });
 
   })
@@ -83,7 +90,7 @@ router.get('/remove', function(req, res) {
   const board = req.query.boardName;
   const user = req.user.UID;
 
-  get_project_access(user, project)
+  get_admin_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
 

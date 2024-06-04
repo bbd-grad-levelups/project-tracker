@@ -2,8 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 const { pool } = require('../db');
-const { get_project_access } = require('../Utils/AccessControl.js');
-const { pull_jira_data_all, extract_issue_count } = require('../Utils/Jira.js');
+const { get_project_access, get_admin_access } = require('../Utils/AccessControl.js');
+const { pull_jira_data_all, extract_issue_count, extract_users } = require('../Utils/Jira.js');
 
 // Add project
 router.get('/create', function(req, res) {
@@ -16,6 +16,24 @@ router.get('/create', function(req, res) {
   const gitLink = req.query.gitLink;
   const confluenceLink = req.query.confluenceLink;
   const user = req.user.UID;
+
+  const validations = [
+    validateParameterLength(project, 255, "Project Name"),
+    validateParameterLength(accessUser, 255, "Access User"),
+    validateParameterLength(accessKey, 255, "Access Key"),
+    validateParameterLength(description, 2048, "Project Description"),
+    validateParameterLength(abbreviation, 8, "Project Abbreviation"),
+    validateParameterLength(jiraLink, 255, "JIRA Link"),
+    validateParameterLength(gitLink, 255, "Git Link"),
+    validateParameterLength(confluenceLink, 255, "Confluence Link")
+  ];
+
+  const errors = validations.filter(validation => validation !== null);
+
+  if (errors.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
 
   pool.request()
   .input('ProjectName', project)
@@ -34,7 +52,13 @@ router.get('/create', function(req, res) {
   })
   .catch((error) => {
     console.log("Failed project creation: " + error);
-    res.status(500).json({ error: "An error occurred when creating the project"});
+    if (error.number === 51000) {
+      res.status(400).json({ error: "Project with given name already exists" });
+    } 
+    else {
+      res.status(500).json({ error: "An error occurred when creating the project", data: error});
+
+    }
   });
 
 });
@@ -44,7 +68,7 @@ router.get('/remove', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
 
-  get_project_access(user, project)
+  get_admin_access(user, project)
   .then(() => {
     pool.request()
     .input('ProjectName', project)
@@ -55,7 +79,7 @@ router.get('/remove', function(req, res) {
     })
     .catch((error) => {
       console.log("Failed project deletion: " + error);
-      res.status(500).json({ error: "An error occurred when removing the project"});
+      res.status(500).json({ error: "An error occurred when removing the project", data: error});
     });
   })
   .catch(() => {
@@ -75,12 +99,99 @@ router.get('/change', function(req, res) {
   const new_confluence = req.query.confluenceLink;
   const user = req.user.UID;
 
-  get_project_access(user, project)
+  const validations = [
+    validateParameterLength(new_name, 255, "Project Name"),
+    validateParameterLength(new_description, 2048, "Project Description"),
+    validateParameterLength(new_abbreviation, 8, "Project Abbreviation"),
+    validateParameterLength(new_jira, 255, "JIRA Link"),
+    validateParameterLength(new_git, 255, "Git Link"),
+    validateParameterLength(new_confluence, 255, "Confluence Link")
+  ];
+
+  const errors = validations.filter(validation => validation !== null);
+
+  if (errors.length > 0) {
+    res.status(400).json(errors);
+    return;
+  }
+  
+  get_admin_access(user, project)
   .then(() => {
-    res.send({ error: "Unimplemented, sorry haha"});
+    res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
   })
   .catch(() => {
     res.status(404).json({ error: "User does not have access to project, or project does not exist"})
+  });
+
+});
+
+// Get a list of all users in a project
+router.get('/users', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+
+  get_project_access(user, project)
+  .then(() => {
+    
+    const query = `
+      SELECT u.username
+      FROM [user] u
+      JOIN user_project up ON u.user_id = up.user_id
+      JOIN project p ON up.project_id = p.project_id
+      WHERE p.project_name = @Project
+    `;
+
+    pool.request()
+    .input('Project', project)
+    .query(query)
+    .then((result) => {
+      const boards = result.recordset;
+
+      res.send({boards: boards});
+    })
+    .catch((error) => {
+      console.log("Error: ", error);
+      res.status(500).json({ error: 'An error occurred while processing your request'});
+    });
+  })
+  .catch((error) => {
+    console.log("error when getting boards: " + error);
+    res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
+  });
+
+});
+
+// Get a list of all boards in a project.
+router.get('/boards', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+  
+  get_project_access(user, project)
+  .then(() => {
+    
+    const query = `
+      SELECT b.board_name
+      FROM board b
+      JOIN project p ON b.project_id = p.project_id 
+      WHERE p.project_name = @Project
+    `;
+
+    pool.request()
+    .input('Project', project)
+    .query(query)
+    .then((result) => {
+      const boards = result.recordset;
+
+      res.send({boards: boards});
+    })
+    .catch((error) => {
+      console.log("Error: ", error);
+      res.status(500).json({ error: 'An error occurred while processing your request'});
+    });
+  })
+  .catch((error) => {
+    console.log("error when getting boards: " + error);
+    res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
   });
 
 });
@@ -89,6 +200,7 @@ router.get('/change', function(req, res) {
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
+
   // Test if user has access to this board
   get_project_access(user, project)
   .then((answer) => {
@@ -102,10 +214,12 @@ router.get('/summary', function(req, res) {
       apiToken
     ).then((data) => {
       let issues = extract_issue_count(data);
+      let users = extract_users(data);
       // Expand summary data here.
       console.log("summary data:", issues);
       res.send({ 
-        summary: issues 
+        summary: issues,
+        users: users 
       });
     }).catch((error) => {
       console.log("Error: ", error);
@@ -124,37 +238,43 @@ router.get('/info', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
  
-  const query = `
-    SELECT p.jira_link, p.git_link, p.confluence_link
-    FROM project p
-    JOIN user_project up ON p.project_id = up.project_id
-    JOIN [user] u ON up.user_id = u.user_id
-    WHERE p.project_name = @Project
-    AND u.UID = @User
-  `;
+  get_project_access(user, project)
+  .then(() => {
+    const query = `
+      SELECT p.jira_link, p.git_link, p.confluence_link
+      FROM project p
+      JOIN user_project up ON p.project_id = up.project_id
+      JOIN [user] u ON up.user_id = u.user_id
+      WHERE p.project_name = @Project
+      AND u.UID = @User
+    `;
 
-  pool.request()
-  .input('Project', project)
-  .input('User', user)
-  .query(query)
-  .then((result) => {
-    if (result.recordset.length > 0) {
-      res.send({ 
-        projectName : project,
-        description: result.recordset[0].project_description,
-        abbreviation: result.recordset[0].project_abbreviation,
-        jira: result.recordset[0].jira_link,
-        git: result.recordset[0].git_link,
-        confluence: result.recordset[0].confluence_link
-      });
-    }
-    else {
-      res.status(404).json({ error: "Project not found for user"});
-    }
+    pool.request()
+    .input('Project', project)
+    .input('User', user)
+    .query(query)
+    .then((result) => {
+      if (result.recordset.length > 0) {
+        res.send({ 
+          projectName : project,
+          description: result.recordset[0].project_description,
+          abbreviation: result.recordset[0].project_abbreviation,
+          jira: result.recordset[0].jira_link,
+          git: result.recordset[0].git_link,
+          confluence: result.recordset[0].confluence_link
+        });
+      }
+      else {
+        res.status(404).json({ error: "Project not found for user"});
+      }
+    })
+    .catch((error) => {
+      console.log("Issue with fetching user projects: " + error);
+      res.status(500).json({ error: "An error occurred while processing your request"});
+    });
   })
-  .catch((error) => {
-    console.log("Issue with fetching user projects: " + error);
-    res.status(500).json({ error: "An error occurred while processing your request"});
+  .catch(() => {
+    res.status(400).json({ error: "Project does not exist, or user does not have access"});
   });
 
 });
@@ -164,7 +284,7 @@ router.get('/projects', function(req, res) {
   const user = req.user.UID;
 
   const query = `
-    SELECT p.project_name
+    SELECT p.project_name, p.project_description, p.project_abbreviation
     FROM project p
     JOIN user_project up ON p.project_id = up.project_id
     JOIN [user] u ON up.user_id = u.user_id 
@@ -175,9 +295,21 @@ router.get('/projects', function(req, res) {
   .input('UID', user)
   .query(query)
   .then((result) => {
-    const projectNames = result.recordset.map(record => record.project_name);
+    const projectDetails = result.recordset.map((record) =>  {
+      return { 
+        name: record.project_name,
+        tag: record.project_abbreviation
+      }
+    });
     console.log(`User ${req.user.userName} has access to: ${result.recordset}`);
-    res.send({ projects: projectNames});
+    if (result.recordset.length > 0) {
+      res.send({ 
+        projectDetails
+      });
+    }
+    else {
+      res.status(404).json({ error: "Project not found for user"});
+    }
   })
   .catch((error) => {
     console.log("Could not access user projects: " + error);
@@ -186,5 +318,11 @@ router.get('/projects', function(req, res) {
 
 });
 
+function validateParameterLength(parameter, maxLength, paramName) {
+  if (parameter.length > maxLength) {
+    return { error: `${paramName} too long` };
+  }
+  return null;
+}
 
 module.exports = router;

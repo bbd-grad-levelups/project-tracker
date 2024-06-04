@@ -65,5 +65,29 @@ function extract_issue_count(responseData) {
   return issues;
 }
 
+function extract_users(responseData) {
+  const parsedData = JSON.parse(responseData);
 
-module.exports = { extract_issue_count, pull_jira_data, pull_jira_data_all };
+  const users = parsedData.issues.map(issue => {
+    if (issue.fields.assignee != null) {
+      return {
+        user: issue.fields.assignee.displayName
+      };
+    }
+    else {
+      return {
+        user: 'Unassigned'
+      }
+    }
+  })
+  .reduce((counts, issue) => {
+    const stage = issue.user;
+    counts[stage] = (counts[stage] || 0) + 1;
+    return counts; 
+  }, {});
+
+  return users;
+}
+
+
+module.exports = { extract_issue_count, pull_jira_data, pull_jira_data_all, extract_users};
