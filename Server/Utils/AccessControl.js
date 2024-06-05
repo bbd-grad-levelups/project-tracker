@@ -71,7 +71,8 @@ async function get_project_access(uid, project) {
           });
         }
         else {
-          reject("User does not have access to project, or project does not exist");
+          console.log("Access control: User does not have access to project, or project does not exist. " + project + " " + uid)
+          reject("Access control: User does not have access to project, or project does not exist");
         }
 
       })
