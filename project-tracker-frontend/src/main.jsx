@@ -10,8 +10,6 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-const backendPath = 'https://api.project-tracker.projects.bbdgrad.com'
-
 const router = createBrowserRouter([
   {
     path: "/",
