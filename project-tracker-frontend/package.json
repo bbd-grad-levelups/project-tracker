@@ -1,7 +1,8 @@
 {
-  "name": "project-tracker-frontend",
+  "name": "project-tracker",
+  "homepage": "https://bbd-grad-levelups.github.io/",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
