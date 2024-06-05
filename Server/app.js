@@ -10,6 +10,11 @@ max: 100,
 message: 'Too many requests from this IP, please try again later.'}); 
 app.use(limiter);
 
+const secondLimiter = rateLimit({   windowMs: 1000, 
+max: 15, 
+message: 'Too many requests from this IP, please try again later.'}); 
+app.use(secondLimiter);
+
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
