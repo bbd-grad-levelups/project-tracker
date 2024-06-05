@@ -7,12 +7,35 @@ import NavBar from '../components/navbar/navbar'
 import UnselectedContainer from '../components/unselected-container/unselected-container'
 import CreateProject from '../components/create-project/create-project'
 import { CssBaseline } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
 import { darkTheme, lightTheme } from "../theme.jsx"
+
+function isTokenExpired(token) {
+    if (!token) {
+        return true;
+    }
+    try {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        const currentTime = Date.now() / 1000;
+        console.log(currentTime);
+        return decodedToken.exp < currentTime;
+    } catch (error) {
+        console.error("Failed to decode token:", error);
+        return true;
+    }
+}
 
 function HomePage() {
     try {
         if (!sessionStorage.getItem("idToken")) {
             location.href = window.location.protocol + "//" + window.location.host + "/login";
+        }
+        if (isTokenExpired(sessionStorage.getItem("token"))) {
+            console.log("EXPIRED");
+            const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
+            sessionStorage.clear();
+            location.href = url;
         }
     } catch (e) {
         console.log(e);
@@ -30,8 +53,10 @@ function HomePage() {
 
     const [projects, setProjects] = useState([]);
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {method: "GET",
-            headers: {"Authorization": `Bearer ${sessionStorage.getItem("idToken")}`}})
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
+        })
             .then((response) => response.json())
             .then((data) => {
                 setProjects(data.projectDetails);
