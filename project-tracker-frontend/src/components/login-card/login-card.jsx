@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { Container, Typography } from '@mui/material';
 import '../../index.css';
 import LoginButton from '../buttons/login-button';
 
@@ -8,20 +8,15 @@ const ThemedBox = () => {
     const theme = useTheme();
 
     return (
-        <Box
+        <Container maxWidth="md"
             sx={{
-                width: '40rem',
-                height: '35rem',
+                mt: 5,
+                p: 5,
+                pt: 4,
+                borderRadius: "15px",
                 backgroundColor: theme.palette.secondary.main,
-                borderRadius: '5%',
                 color: theme.palette.text.primary,
-                margin: 'auto',
-                position: 'relative',
                 display: 'flex',
-                // place-items: center,
-                // flex-direction: column,
-                // justify-content: center,
-                // align-items: center,
                 placeItems: 'center',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -30,10 +25,10 @@ const ThemedBox = () => {
             }}
         >
             <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
-            <h2>Welcome to</h2>
-            <h1> Project-Tracker!</h1>
+            <Typography variant='h5' sx={{ mt: 5, mb: 3 }}>Welcome to</Typography>
+            <Typography variant='h4' style={{ fontWeight: 'bold' }} sx={{ mb: 5 }}>Project-Tracker!</Typography>
             <LoginButton />
-        </Box>
+        </Container>
     );
 };
 
