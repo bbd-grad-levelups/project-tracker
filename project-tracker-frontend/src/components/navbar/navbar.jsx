@@ -7,6 +7,7 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import PersonRemove from '@mui/icons-material/PersonRemove';
 import Settings from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, project }) {
 
@@ -15,6 +16,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
 
     const [open, setOpen] = useState(false);
     const [memberOpen, setMemberOpen] = useState(false);
+    const [errorOpen, setErrorOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const [projectData, setProjectData] = useState(undefined);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const projectOpen = Boolean(anchorEl);
@@ -38,35 +41,89 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     }
 
     const handleClickOpen = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
-                },
-            });
-            const data = await response.json();
-            console.log('Success:', data);
-            setProjectData(data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        if (Object.keys(project).length > 0) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
+                    },
+                });
+                const data = await response.json();
+                console.log('Success:', data);
+                setProjectData(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
 
-        setOpen(true);
+            setOpen(true);
+        }
+        else {
+            setErrorOpen(true);
+        }
     };
 
     const handleClose = () => {
         setOpen(false);
     };
 
+    const handleErrorClose = () => {
+        setErrorOpen(false);
+    };
+
     const handleMemberClickOpen = () => {
-        setMemberOpen(true);
-        console.log(project);
+        if (Object.keys(project).length > 0) {
+            setMemberOpen(true);
+        }
+        else {
+            setErrorOpen(true);
+        }
+
     };
 
     const handleMemberClose = () => {
         setMemberOpen(false);
     };
+
+    const handleDeleteClickOpen = () => {
+        if (Object.keys(project).length > 0) {
+            setDeleteOpen(true);
+        }
+        else {
+            setErrorOpen(true);
+        }
+
+    };
+
+    const handleDeleteClose = () => {
+        setDeleteOpen(false);
+    };
+
+    const handleDeleteProject = async () => {
+        try {
+            let response;
+            if (isAdmin && Object.keys(project).length > 0) {
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/delete?projectName=${project.name}}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer' + sessionStorage.getItem("idToken")
+                    },
+                });
+                const data = await response.json();
+                console.log('Success:', data);
+            }
+            else if (Object.keys(project).length > 0) {
+                // TODO: Call endpoint to remove project from user projects
+                const data = await response.json();
+                console.log('Success:', data);
+            }
+            else {
+                setErrorOpen(true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     const handleProjectClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -149,18 +206,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         Please fill in any fields you would like to update.
                     </DialogContentText>
                     <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="projectName"
-                        label="Project Name"
-                        inputMode="text"
-                        fullWidth={true}
-                        type="text"
-                        autoFocus
-                        margin="dense"
-                        variant="standard"
-                    />
-                    <TextField
                         inputProps={{ maxLength: 5 }}
                         required
                         name="projectAbbreviation"
@@ -173,7 +218,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         variant="standard"
                     />
                     <TextField
-                        inputProps={{ maxLength: 255 }}
+                        inputProps={{ maxLength: 2048 }}
                         required
                         name="projectDescription"
                         label="Project Description"
@@ -182,44 +227,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         maxRows={4}
                         fullWidth={true}
                         type="text"
-                        autoFocus
-                        margin="dense"
-                        variant="standard"
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 5 }}
-                        required
-                        name="accessUser"
-                        label="Access User"
-                        helperText="Your Jira user"
-                        inputMode="text"
-                        fullWidth={true}
-                        type="text"
-                        autoFocus
-                        margin="dense"
-                        variant="standard"
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 5 }}
-                        required
-                        name="accessKey"
-                        label="Access Key"
-                        helperText="Your users' Jira access key"
-                        inputMode="text"
-                        fullWidth={true}
-                        type="text"
-                        autoFocus
-                        margin="dense"
-                        variant="standard"
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="jiraLink"
-                        label="Jira Link"
-                        inputMode="url"
-                        fullWidth={true}
-                        type="url"
                         autoFocus
                         margin="dense"
                         variant="standard"
@@ -251,7 +258,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit">Save</Button>
+                    <Button color='warning' type="submit">Save</Button>
                 </DialogActions>
             </Dialog>
 
@@ -278,16 +285,61 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         Please select the member you would like to remove.
                     </DialogContentText>
                     <Autocomplete
-                        disablePortal
+                        fullWidth={true}
                         id="member-select"
                         options={['test1', 'test2']}
-                        sx={{ width: 300 }}
+                        sx={{ mt: 2 }}
                         renderInput={(params) => <TextField {...params} label="Member" />}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleMemberClose}>Cancel</Button>
-                    <Button type="submit">Save</Button>
+                    <Button color='warning' type="submit">Remove</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={deleteOpen}
+                onClose={handleDeleteClose}
+                aria-labelledby="delete-project-title"
+                aria-describedby="delete-project-description"
+            >
+                <DialogTitle id="delete-project-title">
+                    {isAdmin ? "Delete Project" : "Leave Project"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="delete-project-description">
+                        {isAdmin ?
+                            "Do you want to delete this project for all users?"
+                            :
+                            "Do you want to leave this project?"
+                        }
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteClose} autoFocus>No</Button>
+                    <Button color='error' onClick={() => { handleDeleteClose(); handleDeleteProject(); }}>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={errorOpen}
+                onClose={handleErrorClose}
+                aria-labelledby="error-dialog-title"
+                aria-describedby="error-dialog-description"
+            >
+                <DialogTitle id="error-dialog-title">
+                    {"No project selected"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="error-dialog-description">
+                        Please select a project to use this function.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleErrorClose}>OK</Button>
                 </DialogActions>
             </Dialog>
 
@@ -326,18 +378,37 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={() => { handleProjectClose(); handleMemberClickOpen(); }}>
-                    <ListItemIcon>
-                        <PersonRemove fontSize="small" />
-                    </ListItemIcon>
-                    Edit Project Members
-                </MenuItem>
-                <MenuItem onClick={() => { handleProjectClose(); handleClickOpen(); }}>
-                    <ListItemIcon>
-                        <Settings fontSize="small" />
-                    </ListItemIcon>
-                    Edit Project
-                </MenuItem>
+                {isAdmin &&
+                    <Box>
+                        <MenuItem onClick={() => { handleProjectClose(); handleClickOpen(); }}>
+                            <ListItemIcon>
+                                <Settings fontSize="small" />
+                            </ListItemIcon>
+                            Edit Project
+                        </MenuItem>
+                        <MenuItem onClick={() => { handleProjectClose(); handleMemberClickOpen(); }}>
+                            <ListItemIcon>
+                                <PersonRemove fontSize="small" />
+                            </ListItemIcon>
+                            Edit Project Members
+                        </MenuItem>
+                        <MenuItem onClick={() => { handleDeleteClose(); handleDeleteClickOpen(); }}>
+                            <ListItemIcon>
+                                <DeleteIcon fontSize="small" />
+                            </ListItemIcon>
+                            Delete Project
+                        </MenuItem>
+                    </Box>
+                }
+                {!isAdmin &&
+                    <MenuItem onClick={() => { handleDeleteClose(); handleDeleteClickOpen(); }}>
+                        <ListItemIcon>
+                            <DeleteIcon fontSize="small" />
+                        </ListItemIcon>
+                        Remove Project
+                    </MenuItem>
+                }
+
             </Menu>
         </React.Fragment>
     )
