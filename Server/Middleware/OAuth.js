@@ -21,10 +21,10 @@ function oauthMiddleware(req, res, next) {
       next();
     }
     else {
-        verifier.verify(token)
+        verifier.verify(token)  
         .then((data) => {
           req.user = {
-            userName: data.nickname,
+            userName: data.name,
             UID: data.identities[0].userId,
             email: data.email
           }
