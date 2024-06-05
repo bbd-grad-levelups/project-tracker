@@ -58,6 +58,7 @@ function HomePage() {
                     .then((response) => response.json())
                     .then((data) => {
                         setProjects(data.projectDetails);
+                        console.log(data)
                     })
                     .catch((err) => {
                         console.log(err.message);

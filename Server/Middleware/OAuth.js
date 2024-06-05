@@ -10,7 +10,6 @@ const verifier = jwt_aws.CognitoJwtVerifier.create({
 function oauthMiddleware(req, res, next) {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
     let token = req.headers.authorization.split(' ')[1];
-    
     if (token === 'blah') {
       console.log("Auth testing")
       req.user = {
@@ -24,7 +23,7 @@ function oauthMiddleware(req, res, next) {
         verifier.verify(token)
         .then((data) => {
           req.user = {
-            userName: data.nickname,
+            userName: data.name,
             UID: data.identities[0].userId,
             email: data.email
           }
