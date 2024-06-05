@@ -22,7 +22,7 @@ function LoginPage() {
   };
   const theme = darkMode ? darkTheme : lightTheme;
   const themeWord = theme.palette.mode == 'dark' ? 'Dark' : 'Light'
-  console.log(theme.palette.mode);
+  // console.log(theme.palette.mode);
   return (
     <>
       <ThemeProvider theme={theme}>
