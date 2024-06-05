@@ -88,7 +88,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
                         {!isSmallScreen && <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>}
                         <Typography sx={{ flexGrow: 1, mr: 1, ml: 1 }}></Typography>
-                        {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : userInfo.name}</Typography>}
+                        {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>}
                         <Tooltip title='Display Mode'>
                             <IconButton sx={{
                                 ml: 2, mr: 1, '&:focus': {
@@ -346,7 +346,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
 NavBar.propTypes = { func: Function }
 
 function logout() {
-    const url = "https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=http://localhost:5173/login";
+    const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
+    console.log(url);
     sessionStorage.clear();
     location.href = url;
 }
