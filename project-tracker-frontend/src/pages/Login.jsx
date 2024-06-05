@@ -4,6 +4,7 @@ import '../index.css'
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, Switch } from '@mui/material';
 import { darkTheme, lightTheme } from "../theme.jsx";
+import ThemedBox from '../components/login-card/login-card.jsx';
 
 
 function LoginPage() {
@@ -31,12 +32,7 @@ function LoginPage() {
             <p>{themeWord} mode</p>
             <Switch checked={darkMode} onChange={toggleDarkTheme}></Switch>
           </section>
-          <section id="login-id" className="login-class">
-            <img src='.\src\assets\project-logo.png' alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
-            <h2>Welcome to</h2>
-            <h1> Project-Tracker!</h1>
-            <LoginButton />
-          </section>
+          <ThemedBox></ThemedBox>
         </section>
       </ThemeProvider>
     </>
