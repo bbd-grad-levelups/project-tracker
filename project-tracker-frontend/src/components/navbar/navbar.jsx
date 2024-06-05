@@ -1,7 +1,7 @@
 import './navbar.css'
 import { useMediaQuery, Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import logo from "../../assets/logo.svg";
+import logo from "../../assets/project-logo.png";
 import React, { useState, useEffect } from 'react';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
@@ -142,7 +142,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
-                        <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
+                        <img src={logo} edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
                         {!isSmallScreen && <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>}
                         <Typography sx={{ flexGrow: 1, mr: 1, ml: 1 }}></Typography>
                         {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>}
