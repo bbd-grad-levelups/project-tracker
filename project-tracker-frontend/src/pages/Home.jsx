@@ -16,9 +16,9 @@ function isTokenExpired(token) {
     }
     try {
         const decodedToken = jwtDecode(token);
-        console.log(decodedToken);
+        //console.log(decodedToken);
         const currentTime = Date.now() / 1000;
-        console.log(currentTime);
+        //console.log(currentTime);
         return decodedToken.exp < currentTime;
     } catch (error) {
         console.error("Failed to decode token:", error);
@@ -27,19 +27,6 @@ function isTokenExpired(token) {
 }
 
 function HomePage() {
-    try {
-        if (!sessionStorage.getItem("idToken")) {
-            location.href = window.location.protocol + "//" + window.location.host + "/login";
-        }
-        if (isTokenExpired(sessionStorage.getItem("token"))) {
-            console.log("EXPIRED");
-            const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
-            sessionStorage.clear();
-            location.href = url;
-        }
-    } catch (e) {
-        console.log(e);
-    }
 
     const [darkMode, setDarkMode] = useState(true);
 
@@ -53,17 +40,32 @@ function HomePage() {
 
     const [projects, setProjects] = useState([]);
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
-            method: "GET",
-            headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setProjects(data.projectDetails);
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
+        try {
+            if (!sessionStorage.getItem("idToken")) {
+                location.href = window.location.protocol + "//" + window.location.host + "/login";
+            }
+            else if (isTokenExpired(sessionStorage.getItem("token"))) {
+                console.log("EXPIRED");
+                const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
+                sessionStorage.clear();
+                location.href = url;
+            }
+            else {
+                fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setProjects(data.projectDetails);
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                    });
+            }
+        } catch (e) {
+            console.log(e);
+        }
     }, []);
 
     return (
