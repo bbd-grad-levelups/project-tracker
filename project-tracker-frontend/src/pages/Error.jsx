@@ -36,5 +36,5 @@ function ErrorPage() {
 export default ErrorPage;
 
 function redirectOnClick(){
-  window.location.href = window.location.protocol + "//" + window.location.host;
+  window.location.href = window.location.protocol + "//" + window.location.host+"/project-tracker/";
 }
