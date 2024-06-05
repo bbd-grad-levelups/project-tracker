@@ -84,8 +84,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
                         onChange={handleChange}
                     />
                     <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
+                        inputProps={{ maxLength: 2048 }}
                         name="projectDescription"
                         label="Project Description"
                         inputMode="text"
