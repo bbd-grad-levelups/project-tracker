@@ -4,9 +4,21 @@ async function pull_jira_data_all(hostname, user, token) {
   return pull_jira_data(hostname, '', user, token)
 }
 
-async function pull_jira_data(hostname, board_name, user, token) {
-  let strippedUrl = hostname.replace(/^https?:\/\/[^\/]+\.net\/?.*/, "");
+function stripURL(url) {
+  // Regular expression to match "https://", then capture everything until ".net"
+  var regex = /^https:\/\/([^\/]+\.net)/;
+  
+  // Extract the matched part
+  var match = url.match(regex);
+  
+  // If match is found, return the captured group, otherwise return null
+  return match ? match[1] : null;
+}
 
+async function pull_jira_data(hostname, board_name, user, token) {
+  let strippedUrl = stripURL(hostname);
+
+  console.log("strippe:" + hostname + " " + strippedUrl);
   let path = '/rest/api/3/search?';
   if (board_name == '') {
     path = path + 'jql=';
