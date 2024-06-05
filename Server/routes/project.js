@@ -161,9 +161,9 @@ router.get('/users', function(req, res) {
     .input('Project', project)
     .query(query)
     .then((result) => {
-      const boards = result.recordset;
+      const users = result.recordset;
 
-      res.send({boards: boards});
+      res.send(users);
     })
     .catch((error) => {
       res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
