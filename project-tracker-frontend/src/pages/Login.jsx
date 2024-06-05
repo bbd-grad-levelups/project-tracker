@@ -10,7 +10,7 @@ import ThemedBox from '../components/login-card/login-card.jsx';
 function LoginPage() {
   try {
     if (sessionStorage.getItem("token")) {
-      location.href = window.location.protocol + "//" + window.location.host;
+      location.href = window.location.protocol + "//" + window.location.host + "/project-tracker/";
     }
   } catch (e) {
     console.log(e);

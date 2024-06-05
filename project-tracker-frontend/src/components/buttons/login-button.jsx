@@ -2,7 +2,7 @@
 import Button from "@mui/material/Button";
 import './login-button.css'; // Optional: For styling the button
 
-const loginURL = `https://test-project.auth.eu-west-1.amazoncognito.com/oauth2/authorize?client_id=1echqqb1svir38d3quu5qsu63r&response_type=token&scope=email+openid+profile&attributes=name+email+username+nickname&redirect_uri=http://${window.location.host}/login`;
+const loginURL = `https://test-project.auth.eu-west-1.amazoncognito.com/oauth2/authorize?client_id=1echqqb1svir38d3quu5qsu63r&response_type=token&scope=email+openid+profile&attributes=name+email+username+nickname&redirect_uri=${window.location.protocol}//${window.location.host}/project-tracker/login`;
 
 function handleClick() {
   window.location.href = loginURL;
@@ -37,7 +37,7 @@ if (location.hash.includes("access_token")) {
 
 function loginUser() {
   // let resp
-  window.location.href = window.location.protocol + "//" + window.location.host;
-  console.log(window.location.protocol + "//" + window.location.host);
+  window.location.href = window.location.protocol + "//" + window.location.host + "/project-tracker/";
+  console.log(window.location.protocol + "//" + window.location.host + "/project-tracker/");
 
 }
