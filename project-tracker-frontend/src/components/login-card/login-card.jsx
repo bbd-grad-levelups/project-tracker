@@ -14,7 +14,7 @@ const ThemedBox = () => {
                 p: 5,
                 pt: 4,
                 borderRadius: "15px",
-                backgroundColor: theme.palette.secondary.main,
+                backgroundColor: theme.palette.thirdly.main,
                 color: theme.palette.text.primary,
                 display: 'flex',
                 placeItems: 'center',
