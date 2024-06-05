@@ -30,14 +30,11 @@ router.get('/add', function(req, res) {
       res.send({ message: "User has been succesfully added to project!"});
     })
     .catch((error) => {
-      console.log("Issue adding user to project: " + error);
-      res.status(500).json({ error: `An issue occurred while attempting to add a user to ${project}`});
+      res.status(500).json({ error: `An issue occurred while attempting to add a user to ${project}`, specific: error});
     });
-
   })
   .catch((error) => {
-    console.log("User without access tried to add a user: " + error);
-    res.status(403).json({ error: "Unauthorised access"});
+    res.status(403).json({ error: error });
   });
 
 });
@@ -65,16 +62,12 @@ router.get('/remove', function(req, res) {
       res.send({ message: "User has been succesfully removed from project!"});
     })
     .catch((error) => {
-      console.log("Issue removing user from project: " + error);
-      res.status(500).json({ error: `An issue occurred while attempting to remove a user from ${project}`});
+      res.status(500).json({ error: `An issue occurred while attempting to remove a user from ${project}`, specific: error});
     });
-
   })
   .catch((error) => {
-    console.log("User without access tried to remove a user: " + error);
-    res.status(403).json({ error: "Unauthorised access"});
+    res.status(403).json({ error: error });
   });
-
 });
 
 // All users in system
@@ -91,9 +84,8 @@ router.get('/all', function(req, res) {
     res.send(result.recordset);
   })
   .catch(() => {
-    res.status(500).json({ error: "An error occurred while processing your request"});
+    res.status(500).json({ error: "An error occurred while processing your request", specific: error});
   })
-
 });
 
 module.exports = router;
