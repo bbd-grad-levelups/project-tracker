@@ -42,7 +42,7 @@ function HomePage() {
     useEffect(() => {
         try {
             if (!sessionStorage.getItem("idToken")) {
-                location.href = window.location.protocol + "//" + window.location.host + "/login";
+                location.href = window.location.protocol + "//" + window.location.host + "/project-tracker/login";
             }
             else if (isTokenExpired(sessionStorage.getItem("token"))) {
                 console.log("EXPIRED");

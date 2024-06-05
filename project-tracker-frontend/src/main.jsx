@@ -12,12 +12,12 @@ import "@fontsource/roboto/700.css";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/project-tracker/",
     element: <HomePage></HomePage>,
     errorElement: <ErrorPage></ErrorPage>
   },
   {
-    path: "/login",
+    path: "/project-tracker/login",
     element: <LoginPage></LoginPage>
   }
 ])

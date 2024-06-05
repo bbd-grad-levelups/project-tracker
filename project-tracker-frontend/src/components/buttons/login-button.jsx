@@ -37,7 +37,7 @@ if (location.hash.includes("access_token")) {
 
 function loginUser() {
   // let resp
-  window.location.href = window.location.protocol + "//" + window.location.host;
-  console.log(window.location.protocol + "//" + window.location.host);
+  window.location.href = window.location.protocol + "//" + window.location.host + "/project-tracker/";
+  console.log(window.location.protocol + "//" + window.location.host + "/project-tracker/");
 
 }
