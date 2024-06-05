@@ -88,7 +88,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         <img src='..\src\assets\project-logo.png' edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
                         {!isSmallScreen && <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>}
                         <Typography sx={{ flexGrow: 1, mr: 1, ml: 1 }}></Typography>
-                        {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : ''}</Typography>}
+                        {!isSmallScreen && <Typography variant='body1' id='nav-username'>Hi {userInfo && userInfo.nickname ? userInfo.nickname : userInfo.name}</Typography>}
                         <Tooltip title='Display Mode'>
                             <IconButton sx={{
                                 ml: 2, mr: 1, '&:focus': {
