@@ -46,7 +46,7 @@ function HomePage() {
             }
             else if (isTokenExpired(sessionStorage.getItem("token"))) {
                 console.log("EXPIRED");
-                const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
+                const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/project-tracker/login`;
                 sessionStorage.clear();
                 location.href = url;
             }

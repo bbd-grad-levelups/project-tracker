@@ -417,7 +417,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
 NavBar.propTypes = { func: Function }
 
 function logout() {
-    const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/login`;
+    const url = `https://test-project.auth.eu-west-1.amazoncognito.com/logout?client_id=1echqqb1svir38d3quu5qsu63r&logout_uri=${window.location.protocol}//${window.location.host}/project-tracker/login`;
     console.log(url);
     sessionStorage.clear();
     location.href = url;
