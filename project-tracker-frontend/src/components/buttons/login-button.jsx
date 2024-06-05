@@ -17,7 +17,7 @@ const LoginButton = () => {
           color: 'white',
         },
       }}
-      titleStyle={{
+      titlestyle={{
         color: "white",
         fontSize: 16,
       }}
