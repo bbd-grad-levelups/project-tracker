@@ -5,7 +5,7 @@ var router = express.Router();
 // Add user to project
 router.get('/add', function(req, res) {
   const project = req.query.projectName;
-  const newUser = req.query.userName;
+  const newUser = req.query.userID;
   const user = req.user.UID;
 
   get_project_access(user, project)
@@ -17,7 +17,7 @@ router.get('/add', function(req, res) {
       (project_id, role_id, user_id)
       VALUES (
         @Project,
-        (SELECT user_id FROM [user] WHERE userName = @User),
+        @User,
         (SELECT role_id FROM role WHERE description = 'User')
       )
     `;
@@ -42,7 +42,7 @@ router.get('/add', function(req, res) {
 // Remove user from project
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
-  const oldUser = req.query.userName;
+  const oldUser = req.query.userID;
   const user = req.query.UID;
 
   get_project_access(user, project)
@@ -51,7 +51,7 @@ router.get('/remove', function(req, res) {
 
     const query = `
       DELETE FROM user_project
-      WHERE user_id = (SELECT user_id FROM [user] WHERE userName = @User),
+      WHERE user_id = @User,
     `;
 
     pool.request()

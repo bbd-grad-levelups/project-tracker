@@ -132,8 +132,6 @@ router.get('/change', function(req, res) {
     .catch((error) => {
       res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
     });
-
-    res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
   })
   .catch((error) => {
     res.status(403).json({ error: error });
@@ -150,7 +148,7 @@ router.get('/users', function(req, res) {
   .then(() => {
     
     const query = `
-      SELECT u.username
+      SELECT u.username, u.user_id
       FROM [user] u
       JOIN user_project up ON u.user_id = up.user_id
       JOIN project p ON up.project_id = p.project_id
@@ -161,7 +159,7 @@ router.get('/users', function(req, res) {
     .input('Project', project)
     .query(query)
     .then((result) => {
-      const users = result.recordset;
+      const users = result.recordset.map((user) => { return { label: user.username, id: user.user_id }; });
 
       res.send(users);
     })

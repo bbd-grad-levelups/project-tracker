@@ -5,6 +5,8 @@ async function pull_jira_data_all(hostname, user, token) {
 }
 
 async function pull_jira_data(hostname, board_name, user, token) {
+  let strippedUrl = hostname.replace(/^https?:\/\/[^\/]+\.net\/?.*/, "");
+
   let path = '/rest/api/3/search?';
   if (board_name == '') {
     path = path + 'jql=';
@@ -15,7 +17,7 @@ async function pull_jira_data(hostname, board_name, user, token) {
 
   return new Promise((resolve, reject) => {
     const options = {
-      hostname: hostname,
+      hostname: strippedUrl,
       path: path,
       method: 'GET',
       headers: {
