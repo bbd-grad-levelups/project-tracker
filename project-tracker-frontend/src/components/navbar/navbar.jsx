@@ -16,6 +16,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
 
     const [open, setOpen] = useState(false);
     const [memberOpen, setMemberOpen] = useState(false);
+    const [memberData, setMemberData] = useState(undefined);
     const [errorOpen, setErrorOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [projectData, setProjectData] = useState(undefined);
@@ -71,8 +72,21 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         setErrorOpen(false);
     };
 
-    const handleMemberClickOpen = () => {
+    const handleMemberClickOpen = async () => {
         if (Object.keys(project).length > 0) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/users?projectName=${project.name}}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
+                    },
+                });
+                const data = await response.json();
+                console.log('Success:', data);
+                setMemberData(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
             setMemberOpen(true);
         }
         else {
@@ -103,8 +117,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         try {
             let response;
             if (isAdmin && Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/delete?projectName=${project.name}}`, {
-                    method: 'DELETE',
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/remove?projectName=${project.name}}`, {
+                    method: 'GET',
                     headers: {
                         'Authorization': 'Bearer' + sessionStorage.getItem("idToken")
                     },
@@ -113,7 +127,12 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 console.log('Success:', data);
             }
             else if (Object.keys(project).length > 0) {
-                // TODO: Call endpoint to remove project from user projects
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer' + sessionStorage.getItem("idToken")
+                    },
+                });
                 const data = await response.json();
                 console.log('Success:', data);
             }
@@ -216,6 +235,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
+                        defaultValue={projectData.abbreviation}
                     />
                     <TextField
                         inputProps={{ maxLength: 2048 }}
@@ -230,6 +250,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
+                        defaultValue={projectData.description}
                     />
                     <TextField
                         inputProps={{ maxLength: 255 }}
@@ -242,6 +263,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
+                        defaultValue={projectData.confluence}
                     />
                     <TextField
                         inputProps={{ maxLength: 255 }}
@@ -254,6 +276,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
+                        defaultValue={projectData.git}
                     />
                 </DialogContent>
                 <DialogActions>
