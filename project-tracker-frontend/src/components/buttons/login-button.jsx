@@ -17,7 +17,6 @@ const LoginButton = () => {
           color: 'white',
         },
       }}
-
       style={{ height: '3rem', width: '15rem', border: '2px solid', fontSize: '1.2rem' }}
     >Login With Cognito</Button>
   );

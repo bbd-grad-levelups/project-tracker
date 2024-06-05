@@ -6,14 +6,14 @@ const darkTheme = responsiveFontSizes(createTheme({
         background: {
             default: 'rgb(30,30,30)'
         },
-        secondary: { main: '#6c7276' }
+        thirdly: { main: '#6c7276' }
     }
 }));
 
 const lightTheme = responsiveFontSizes(createTheme({
     palette: {
         mode: 'light',
-        secondary: { main: '#6c727678' }
+        thirdly: { main: '#6c727678' }
     }
 }));
 

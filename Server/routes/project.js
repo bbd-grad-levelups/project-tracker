@@ -156,7 +156,7 @@ router.get('/users', function(req, res) {
   })
   .catch((error) => {
     console.log("error when getting boards: " + error);
-    res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
+    res.status(403).json({ error: 'User does not have access to project, or project does not exist', specific: error});
   });
 
 });
