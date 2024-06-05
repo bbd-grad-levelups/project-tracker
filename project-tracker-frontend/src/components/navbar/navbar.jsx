@@ -235,7 +235,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
-                        defaultValue={projectData.abbreviation}
+                        defaultValue={projectData && projectData.abbreviation}
                     />
                     <TextField
                         inputProps={{ maxLength: 2048 }}
@@ -250,7 +250,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
-                        defaultValue={projectData.description}
+                        defaultValue={projectData && projectData.description}
                     />
                     <TextField
                         inputProps={{ maxLength: 255 }}
@@ -263,7 +263,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
-                        defaultValue={projectData.confluence}
+                        defaultValue={projectData && projectData.confluence}
                     />
                     <TextField
                         inputProps={{ maxLength: 255 }}
@@ -276,7 +276,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         autoFocus
                         margin="dense"
                         variant="standard"
-                        defaultValue={projectData.git}
+                        defaultValue={projectData && projectData.git}
                     />
                 </DialogContent>
                 <DialogActions>
