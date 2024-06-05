@@ -107,7 +107,32 @@ router.get('/change', function(req, res) {
   }
   
   get_admin_access(user, project)
-  .then(() => {
+  .then((answer) => {
+    const projectID = answer.projectID;
+
+    const query = `
+      UPDATE [project]
+      SET project_abbreviation = @Abbreviation,
+      project_description = @Description,
+      git_link = @Git,
+      confluence_link = @Confluence
+      WHERE project_id = @ID
+    `;
+
+    pool.request()
+    .input('Abbreviation', new_abbreviation)
+    .input('Description', new_description)
+    .input('Git', new_git)
+    .input('Confluence', new_confluence)
+    .input('ID', projectID)
+    .query(query)
+    .then(() => {
+      res.send({ result: "Project information successfully changed!" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    });
+
     res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
   })
   .catch((error) => {
@@ -226,8 +251,8 @@ router.get('/info', function(req, res) {
     const query = `
       SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description, p.project_abbreviation
       FROM project p
-      JOIN user_project up ON p.project_id = up.project_id
-      JOIN [user] u ON up.user_id = u.user_id
+      JOIN user_project up ON p.[project_id] = up.[project_id]
+      JOIN [user] u ON up.[user_id] = u.[user_id]
       WHERE p.project_name = @Project
       AND u.UID = @User
     `;
