@@ -6,6 +6,7 @@ const loginURL = `https://test-project.auth.eu-west-1.amazoncognito.com/oauth2/a
 
 function handleClick() {
   window.location.href = loginURL;
+  console.log(loginURL);
 }
 
 const LoginButton = () => {
