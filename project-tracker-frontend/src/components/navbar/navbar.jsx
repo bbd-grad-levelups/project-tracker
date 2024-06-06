@@ -289,7 +289,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 func(-2)
             }
             else if (Object.keys(project).length > 0) {
-                response = await fetch(`${base_url}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}`, {
+                console.log("testing");
+                response = await fetch(`${base_url}/user/removeme?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
