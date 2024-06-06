@@ -34,7 +34,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
         });
 
         console.log(params.toString());
-
+        console.log(`${import.meta.env.VITE_BASE_URL}`);
         try {
             const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
                 method: 'GET',
