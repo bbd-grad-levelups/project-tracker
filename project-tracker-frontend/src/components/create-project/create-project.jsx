@@ -3,7 +3,7 @@ import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 const local = false;
-const base_url = local ? "http://localhost:3000" : "https://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
+const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com"
 function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
     const token = sessionStorage.getItem("idToken")

@@ -11,7 +11,7 @@ import Settings from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const local = false;
-const base_url = local ? "http://localhost:3000" : "https://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com";
+const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com";
 
 function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, getProjectData = () => { console.log('No function provided') }, project}) {
 
