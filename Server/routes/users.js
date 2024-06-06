@@ -42,7 +42,7 @@ router.get('/add', function(req, res) {
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
   const oldUser = req.query.userID;
-  const user = req.query.UID;
+  const user = req.user.UID;
 
   get_project_access(user, project)
   .then((answer) => {
@@ -71,7 +71,7 @@ router.get('/remove', function(req, res) {
 
 router.get('/removeme', function(req, res) {
   const project = req.query.projectName;
-  const user = req.query.UID;
+  const user = req.user.UID;
 
   get_project_access(user, project)
   .then((answer) => {
