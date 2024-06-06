@@ -36,7 +36,6 @@ router.get('/add', function(req, res) {
   .catch((error) => {
     res.status(403).json({ error: error });
   });
-
 });
 
 // Remove user from project

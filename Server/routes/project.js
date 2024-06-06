@@ -139,6 +139,20 @@ router.get('/change', function(req, res) {
 
 });
 
+router.get('/admin', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+
+  get_admin_access(user, project)
+  .then(() => {
+    res.send({ isAdmin: true });
+  })
+  .catch(() => {
+    res.send({ isAdmin: false });
+  });
+  
+});
+
 // Get a list of all users in a project
 router.get('/users', function(req, res) {
   const project = req.query.projectName;
