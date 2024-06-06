@@ -2,8 +2,9 @@ import "./create-project.css";
 import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-
-function CreateProject({setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = []}) {
+const local = true;
+const base_url = local ? "http://localhost:3000" : "http://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
+function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
     const token = sessionStorage.getItem("idToken")
     const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
         console.log(params.toString());
         console.log(`${import.meta.env.VITE_BASE_URL}`);
         try {
-            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
+            const response = await fetch(`${base_url}/project/create?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -44,13 +45,13 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
             });
             const data = await response.json();
             console.log('Success:', data);
-            if (data.error == null){
+            if (data.error == null) {
                 setSelectedItem(projects.length);
-                setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}));
+                setProjects(projects.concat({ name: formData.projectName, tag: formData.projectAbbreviation }));
             } else {
                 alert(data.error)
             }
-            
+
         } catch (error) {
             console.error('Error:', error);
             alert("Project could not be created, please try again later")
@@ -58,103 +59,103 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
     };
 
     return (
-            <Container maxWidth="md" sx={{ mt: 3, mb: 3 }}>
-                <Stack spacing={3} alignItems="flex-start" component="form" id="create-project-form" onSubmit={sendProjectData} >
-                    <Typography variant="h2">Create a new project</Typography>
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="projectName"
-                        label="Project Name"
-                        inputMode="text"
-                        type="text"
-                        fullWidth={true}
-                        value={formData.projectName}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 8 }}
-                        required
-                        name="projectAbbreviation"
-                        label="Project Abbreviation"
-                        inputMode="text"
-                        type="text"
-                        fullWidth={true}
-                        value={formData.projectAbbreviation}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 2048 }}
-                        name="projectDescription"
-                        label="Project Description"
-                        inputMode="text"
-                        type="text"
-                        multiline
-                        rows={4}
-                        fullWidth={true}
-                        value={formData.projectDescription}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="accessUser"
-                        label="Access User"
-                        helperText="Your Jira user"
-                        inputMode="text"
-                        type="text"
-                        fullWidth={true}
-                        value={formData.accessUser}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="accessKey"
-                        label="Access Key"
-                        helperText="Your users' Jira access key"
-                        inputMode="text"
-                        fullWidth={true}
-                        type="text"
-                        value={formData.accessKey}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        required
-                        name="jiraLink"
-                        label="Jira Link"
-                        inputMode="url"
-                        type="url"
-                        fullWidth={true}
-                        value={formData.jiraLink}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        name="confluenceLink"
-                        label="Confluence Link"
-                        inputMode="url"
-                        fullWidth={true}
-                        type="url"
-                        value={formData.confluenceLink}
-                        onChange={handleChange}
-                    />
-                    <TextField
-                        inputProps={{ maxLength: 255 }}
-                        name="githubLink"
-                        label="Github Link"
-                        inputMode="url"
-                        fullWidth={true}
-                        type="url"
-                        value={formData.githubLink}
-                        onChange={handleChange}
-                    />
-                    <Button variant="contained" color="primary" type="submit" size="large">
-                        Create
-                    </Button>
-                </Stack>
-            </Container>
+        <Container maxWidth="md" sx={{ mt: 3, mb: 3 }}>
+            <Stack spacing={3} alignItems="flex-start" component="form" id="create-project-form" onSubmit={sendProjectData} >
+                <Typography variant="h2">Create a new project</Typography>
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    required
+                    name="projectName"
+                    label="Project Name"
+                    inputMode="text"
+                    type="text"
+                    fullWidth={true}
+                    value={formData.projectName}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 8 }}
+                    required
+                    name="projectAbbreviation"
+                    label="Project Abbreviation"
+                    inputMode="text"
+                    type="text"
+                    fullWidth={true}
+                    value={formData.projectAbbreviation}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 2048 }}
+                    name="projectDescription"
+                    label="Project Description"
+                    inputMode="text"
+                    type="text"
+                    multiline
+                    rows={4}
+                    fullWidth={true}
+                    value={formData.projectDescription}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    required
+                    name="accessUser"
+                    label="Access User"
+                    helperText="Your Jira user"
+                    inputMode="text"
+                    type="text"
+                    fullWidth={true}
+                    value={formData.accessUser}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    required
+                    name="accessKey"
+                    label="Access Key"
+                    helperText="Your users' Jira access key"
+                    inputMode="text"
+                    fullWidth={true}
+                    type="text"
+                    value={formData.accessKey}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    required
+                    name="jiraLink"
+                    label="Jira Link"
+                    inputMode="url"
+                    type="url"
+                    fullWidth={true}
+                    value={formData.jiraLink}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    name="confluenceLink"
+                    label="Confluence Link"
+                    inputMode="url"
+                    fullWidth={true}
+                    type="url"
+                    value={formData.confluenceLink}
+                    onChange={handleChange}
+                />
+                <TextField
+                    inputProps={{ maxLength: 255 }}
+                    name="githubLink"
+                    label="Github Link"
+                    inputMode="url"
+                    fullWidth={true}
+                    type="url"
+                    value={formData.githubLink}
+                    onChange={handleChange}
+                />
+                <Button variant="contained" color="primary" type="submit" size="large">
+                    Create
+                </Button>
+            </Stack>
+        </Container>
     );
 }
 
