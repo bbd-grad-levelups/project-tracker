@@ -42,7 +42,7 @@ function ProjectGrid({ projectName = '' }) {
         })
             .then((response) => response.json())
             .then((data) => {
-                setBoards([{ board_name: "All Boards" }].concat(data.boards));
+                setBoards(["All Boards" ].concat(data.boards));
             })
             .catch((err) => {
                 console.log(err.message);
@@ -209,7 +209,7 @@ function ProjectGrid({ projectName = '' }) {
                                 >
                                     {boards.map((board) => {
                                         return (
-                                            <MenuItem key={board.board_name} value={board.board_name}>{board.board_name}</MenuItem>
+                                            <MenuItem key={board} value={board}>{board}</MenuItem>
                                         )
                                     })}
                                 </Select>
