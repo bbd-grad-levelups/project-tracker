@@ -16,9 +16,7 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 
-
-const local = false;
-const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com"
+import { base_url } from "../../pages/Home";
 
 ChartJS.register(
     CategoryScale,
@@ -46,7 +44,7 @@ function ProjectGrid({ project }) {
         })
             .then((response) => response.json())
             .then((data) => {
-                setBoards(["All Boards" ].concat(data.boards));
+                setBoards(["All Boards"].concat(data.boards));
             })
             .catch((err) => {
                 console.log(err.message);

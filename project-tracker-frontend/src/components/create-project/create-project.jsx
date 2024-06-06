@@ -2,8 +2,8 @@ import "./create-project.css";
 import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-const local = false;
-const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com"
+import { base_url } from "../../pages/Home";
+
 function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
     const token = sessionStorage.getItem("idToken")

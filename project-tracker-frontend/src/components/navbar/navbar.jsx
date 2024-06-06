@@ -9,9 +9,7 @@ import PersonRemove from '@mui/icons-material/PersonRemove';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const local = false;
-const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com";
+import { base_url } from '../../pages/Home';
 
 function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, getProjectData = () => { console.log('No function provided') }, project}) {
 

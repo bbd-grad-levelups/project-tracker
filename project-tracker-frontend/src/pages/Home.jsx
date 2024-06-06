@@ -10,8 +10,8 @@ import { CssBaseline } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { darkTheme, lightTheme } from "../theme.jsx"
 
-const local = false;
-const base_url = local ? "http://localhost:3000" : "https://api.project-tracker.projects.bbdgrad.com"
+const local = true;
+export const base_url = local ? `${import.meta.env.VITE_BASE_URL}` : "https://api.project-tracker.projects.bbdgrad.com"
 
 function isTokenExpired(token) {
     if (!token) {
@@ -93,4 +93,4 @@ function HomePage() {
     )
 }
 
-export default HomePage
+export default HomePage;
