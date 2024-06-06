@@ -332,7 +332,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             {/* NAVBAR */}
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
-                    <Toolbar sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <Toolbar>
                         <img src={logo} edge="start" className="logo" alt="Logo" onClick={() => func(-1)} />
                         {!isSmallScreen && <Typography variant='h5' color={'inherit'}>Project Tracker</Typography>}
                         <Typography sx={{ flexGrow: 1, mr: 1, ml: 1 }}></Typography>
