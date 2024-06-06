@@ -51,6 +51,7 @@ router.get('/remove', function(req, res) {
     const query = `
       DELETE FROM user_project
       WHERE user_id = @User
+      AND project_id = @Project
     `;
 
     pool.request()
