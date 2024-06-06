@@ -27,6 +27,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
 
     const sendProjectData = async (event) => {
         event.preventDefault();
+        document.getElementById("create-project-button").disabled = true;
 
         const params = new URLSearchParams();
         Object.entries(formData).forEach(([key, value]) => {
@@ -47,13 +48,16 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
             if (data.error == null){
                 setSelectedItem(projects.length);
                 setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}));
+                document.getElementById("create-project-button").disabled = false;
             } else {
                 alert(data.error)
+                document.getElementById("create-project-button").disabled = false;
             }
             
         } catch (error) {
             console.error('Error:', error);
             alert("Project could not be created, please try again later")
+            document.getElementById("create-project-button").disabled = false;
         }
     };
 
@@ -150,7 +154,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
                         value={formData.githubLink}
                         onChange={handleChange}
                     />
-                    <Button variant="contained" color="primary" type="submit" size="large">
+                    <Button variant="contained" color="primary" type="submit" size="large" id="create-project-button">
                         Create
                     </Button>
                 </Stack>
