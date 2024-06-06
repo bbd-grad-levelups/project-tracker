@@ -2,8 +2,9 @@ import "./create-project.css";
 import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-
-function CreateProject({setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = []}) {
+const local = false;
+const base_url = local ? "http://localhost:3000" : "http://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
+function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
     const token = sessionStorage.getItem("idToken")
     const [formData, setFormData] = useState({
@@ -35,9 +36,9 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
         });
 
         console.log(params.toString());
-
+        console.log(`${import.meta.env.VITE_BASE_URL}`);
         try {
-            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/create?${params.toString()}`, {
+            const response = await fetch(`${base_url}/project/create?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -45,7 +46,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
             });
             const data = await response.json();
             console.log('Success:', data);
-            if (data.error == null){
+            if (data.error == null) {
                 setSelectedItem(projects.length);
                 setProjects(projects.concat({name: formData.projectName, tag: formData.projectAbbreviation}));
                 document.getElementById("create-project-button").disabled = false;
@@ -53,7 +54,7 @@ function CreateProject({setSelectedItem = () => { console.log('No function provi
                 alert(data.error)
                 document.getElementById("create-project-button").disabled = false;
             }
-            
+
         } catch (error) {
             console.error('Error:', error);
             alert("Project could not be created, please try again later")

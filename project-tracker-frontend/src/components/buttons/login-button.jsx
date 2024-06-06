@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import './login-button.css'; // Optional: For styling the button
 
 const loginURL = `https://test-project.auth.eu-west-1.amazoncognito.com/oauth2/authorize?client_id=1echqqb1svir38d3quu5qsu63r&response_type=token&scope=email+openid+profile&attributes=name+email+username+nickname&redirect_uri=${window.location.protocol}//${window.location.host}/login`;
+console.log(loginURL);
 
 function handleClick() {
   window.location.href = loginURL;
