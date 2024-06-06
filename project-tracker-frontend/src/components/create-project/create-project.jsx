@@ -2,8 +2,8 @@ import "./create-project.css";
 import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-const local = false;
-const base_url = local ? "http://localhost:3000" : "https://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
+import { base_url } from "../../pages/Home";
+
 function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
     const token = sessionStorage.getItem("idToken")
@@ -36,7 +36,6 @@ function CreateProject({ setSelectedItem = () => { console.log('No function prov
         });
 
         console.log(params.toString());
-        console.log(`${import.meta.env.VITE_BASE_URL}`);
         try {
             const response = await fetch(`${base_url}/project/create?${params.toString()}`, {
                 method: 'GET',

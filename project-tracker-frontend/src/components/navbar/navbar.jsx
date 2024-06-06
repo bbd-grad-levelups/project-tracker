@@ -9,6 +9,7 @@ import PersonRemove from '@mui/icons-material/PersonRemove';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { base_url } from '../../pages/Home';
 
 function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, getProjectData = () => { console.log('No function provided') }, project}) {
 
@@ -54,7 +55,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const getAdmin = async () => {
         if (Object.keys(project).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/admin?projectName=${project.name}`, {
+                const response = await fetch(`${base_url}/project/admin?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -79,7 +80,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const handleClickOpen = async () => {
         if (Object.keys(project).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}`, {
+                const response = await fetch(`${base_url}/project/info?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -107,7 +108,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const updateProject = async (input) => {
         if (Object.keys(project).length > 0 && Object.keys(input).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/change?projectName=${project.name}`
+                const response = await fetch(`${base_url}/project/change?projectName=${project.name}`
                     + `&abbreviation=${input.projectAbbreviation}`
                     + `&description=${input.projectDescription}`
                     + `&confluenceLink=${input.confluenceLink}`
@@ -151,7 +152,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             }
             else {
                 try {
-                    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userID=${input.id}`, {
+                    const response = await fetch(`${base_url}/user/remove?projectName=${project.name}&userID=${input.id}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -183,7 +184,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         }
         if (Object.keys(project).length > 0 && Object.keys(input).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/add?projectName=${project.name}&userEmail=${input.userEmail}`, {
+                const response = await fetch(`${base_url}/user/add?projectName=${project.name}&userEmail=${input.userEmail}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -217,7 +218,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const handleMemberClickOpen = async () => {
         if (Object.keys(project).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/users?projectName=${project.name}`, {
+                const response = await fetch(`${base_url}/project/users?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -274,7 +275,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         try {
             let response;
             if (isAdmin && Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/remove?projectName=${project.name}`, {
+                response = await fetch(`${base_url}/project/remove?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -288,7 +289,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 func(-2)
             }
             else if (Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/removeme?projectName=${project.name}`, {
+                response = await fetch(`${base_url}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")

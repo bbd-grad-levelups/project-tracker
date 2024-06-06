@@ -16,6 +16,8 @@ import {
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
 
+import { base_url } from "../../pages/Home";
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -36,13 +38,13 @@ function ProjectGrid({ project }) {
     const [boards, setBoards] = useState([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/boards?projectName=${project.name}`, {
+        fetch(`${base_url}/project/boards?projectName=${project.name}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
             .then((response) => response.json())
             .then((data) => {
-                setBoards(["All Boards" ].concat(data.boards));
+                setBoards(["All Boards"].concat(data.boards));
             })
             .catch((err) => {
                 console.log(err.message);
@@ -52,7 +54,7 @@ function ProjectGrid({ project }) {
 
     const [projectLinks, setProjectLinks] = useState([]);
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}`, {
+        fetch(`${base_url}/project/info?projectName=${project.name}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -69,7 +71,7 @@ function ProjectGrid({ project }) {
     const [projectMembers, setProjectMembers] = useState([]);
     useEffect(() => {
         if (board == 'All Boards') {
-            fetch(`${import.meta.env.VITE_BASE_URL}/project/summary?projectName=${project.name}`, {
+            fetch(`${base_url}/project/summary?projectName=${project.name}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })
@@ -82,7 +84,7 @@ function ProjectGrid({ project }) {
                     console.log(err.message);
                 });
         } else {
-            fetch(`${import.meta.env.VITE_BASE_URL}/board/summary?projectName=${project.name}&boardName=${board}`, {
+            fetch(`${base_url}/board/summary?projectName=${project.name}&boardName=${board}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })

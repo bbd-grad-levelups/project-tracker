@@ -10,6 +10,9 @@ import { CssBaseline } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { darkTheme, lightTheme } from "../theme.jsx"
 
+const local = true;
+export const base_url = local ? `${import.meta.env.VITE_BASE_URL}` : "https://api.project-tracker.projects.bbdgrad.com"
+
 function isTokenExpired(token) {
     if (!token) {
         return true;
@@ -59,7 +62,7 @@ function HomePage() {
     }, []);
 
     const getProjectData = () => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
+        fetch(`${base_url}/project/projects`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -90,4 +93,4 @@ function HomePage() {
     )
 }
 
-export default HomePage
+export default HomePage;
