@@ -3,7 +3,7 @@ var router = express.Router();
 
 const { pool } = require('../db');
 const { get_project_access, get_admin_access } = require('../Utils/AccessControl.js');
-const { pull_jira_data_all, extract_issue_count, extract_users } = require('../Utils/Jira.js');
+const { pull_jira_data_all, extract_issue_count, extract_users, extract_boards } = require('../Utils/Jira.js');
 
 // Add project
 router.get('/create', function(req, res) {
@@ -192,26 +192,45 @@ router.get('/boards', function(req, res) {
   const user = req.user.UID;
   
   get_project_access(user, project)
-  .then(() => {
-    
-    const query = `
-      SELECT b.board_name
-      FROM board b
-      JOIN project p ON b.project_id = p.project_id 
-      WHERE p.project_name = @Project
-    `;
+  .then((answer) => {
+    const apiUser = answer.user;
+    const apiToken = answer.token;
+    const apiProject = answer.project;
+    console.log("Doing data");
+    pull_jira_data_all(
+      apiProject,
+      apiUser,
+      apiToken
+    ).then((data) => {
+      let boards = extract_boards(data);
 
-    pool.request()
-    .input('Project', project)
-    .query(query)
-    .then((result) => {
-      const boards = result.recordset;
-
-      res.send({boards: boards});
-    })
-    .catch((error) => {
+      res.send({ 
+        boards: boards
+      });
+    }).catch((error) => {
       res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
     });
+
+
+    
+    // const query = `
+    //   SELECT b.board_name
+    //   FROM board b
+    //   JOIN project p ON b.project_id = p.project_id 
+    //   WHERE p.project_name = @Project
+    // `;
+
+    // pool.request()
+    // .input('Project', project)
+    // .query(query)
+    // .then((result) => {
+    //   const boards = result.recordset;
+
+    //   res.send({boards: boards});
+    // })
+    // .catch((error) => {
+    //   res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    // });
   })
   .catch((error) => {
     res.status(403).json({ error: error });

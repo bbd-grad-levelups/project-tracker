@@ -103,5 +103,20 @@ function extract_users(responseData) {
   return users;
 }
 
+function extract_boards(responseData) {
+  const parsedData = JSON.parse(responseData);
+  
+  const boards = parsedData.issues.map(issue => issue.fields.project.key)
+  .filter((board, index, self) =>
+    index === self.findIndex(b => (
+      b === board
+    ))
+  );
+  console.log("Boards: " + boards);
+  return boards;
+}
 
-module.exports = { extract_issue_count, pull_jira_data, pull_jira_data_all, extract_users};
+
+
+
+module.exports = { extract_issue_count, pull_jira_data, pull_jira_data_all, extract_users, extract_boards};
