@@ -28,7 +28,7 @@ ChartJS.register(
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-function ProjectGrid({ projectName = '' }) {
+function ProjectGrid({ project }) {
     const [expanded, setExpanded] = useState(true);
 
     const [board, setBoard] = useState('All Boards');
@@ -36,7 +36,7 @@ function ProjectGrid({ projectName = '' }) {
     const [boards, setBoards] = useState([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/boards?projectName=${projectName}`, {
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/boards?projectName=${project.name}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -52,7 +52,7 @@ function ProjectGrid({ projectName = '' }) {
 
     const [projectLinks, setProjectLinks] = useState([]);
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${projectName}`, {
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -63,13 +63,13 @@ function ProjectGrid({ projectName = '' }) {
             .catch((err) => {
                 console.log(err.message);
             });
-    }, []);
+    }, [project]);
 
     const [projectSummary, setProjectSummary] = useState([]);
     const [projectMembers, setProjectMembers] = useState([]);
     useEffect(() => {
         if (board == 'All Boards') {
-            fetch(`${import.meta.env.VITE_BASE_URL}/project/summary?projectName=${projectName}`, {
+            fetch(`${import.meta.env.VITE_BASE_URL}/project/summary?projectName=${project.name}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })
@@ -82,7 +82,7 @@ function ProjectGrid({ projectName = '' }) {
                     console.log(err.message);
                 });
         } else {
-            fetch(`${import.meta.env.VITE_BASE_URL}/board/summary?projectName=${projectName}&boardName=${board}`, {
+            fetch(`${import.meta.env.VITE_BASE_URL}/board/summary?projectName=${project.name}&boardName=${board}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })
@@ -193,7 +193,7 @@ function ProjectGrid({ projectName = '' }) {
     return (
         <Container className="project-grid">
             <div onClick={() => setExpanded(true)}>
-                <h2 className="project-title">{projectName}</h2>
+                <h2 className="project-title">{project.name}</h2>
             </div>
             {expanded ? (
                 <div className='project-dashboard'>

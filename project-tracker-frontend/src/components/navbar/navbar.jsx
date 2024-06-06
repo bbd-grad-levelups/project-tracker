@@ -10,7 +10,7 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, project }) {
+function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No function provided') }, getProjectData = () => { console.log('No function provided') }, project}) {
 
     const theme = useTheme();
 
@@ -122,6 +122,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 }
                 const data = await response.json();
                 setProjectData(data);
+                getProjectData();
             } catch (error) {
                 setErrorTitle('Failed to update project');
                 setErrorMessage('Please try again later.\nError: ' + error.message);

@@ -51,32 +51,36 @@ function HomePage() {
                 location.href = url;
             }
             else {
-                fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
-                    method: "GET",
-                    headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setProjects(data.projectDetails);
-                    })
-                    .catch((err) => {
-                        console.log(err.message);
-                    });
+                getProjectData();
             }
         } catch (e) {
             console.log(e);
         }
     }, []);
 
+    const getProjectData = () => {
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setProjects(data.projectDetails);
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme />
             <div className='page'>
-                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem} project={projects && projects[selectedItem] ? projects[selectedItem] : {}} />
+                <NavBar darkMode={darkMode} toggleDarkTheme={toggleDarkTheme} func={setSelectedItem} getProjectData={getProjectData} project={projects && projects[selectedItem] ? projects[selectedItem] : {}} />
                 <div className='content'>
                     <SideBar func={setSelectedItem} projects={projects}></SideBar>
                     {selectedItem >= 0 ? (
-                        <ProjectGrid key={projects[selectedItem].name} projectName={projects[selectedItem].name}></ProjectGrid>
+                        <ProjectGrid key={projects[selectedItem].name} project={projects[selectedItem]}></ProjectGrid>
                     ) : selectedItem == -1 ? (
                         <CreateProject setSelectedItem={setSelectedItem} setProjects={setProjects} projects={projects}></CreateProject>
                     ) : <UnselectedContainer></UnselectedContainer>}
