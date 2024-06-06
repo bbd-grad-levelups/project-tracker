@@ -10,6 +10,9 @@ import { CssBaseline } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import { darkTheme, lightTheme } from "../theme.jsx"
 
+const local = false;
+const base_url = local ? "http://localhost:3000" : "https://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
+
 function isTokenExpired(token) {
     if (!token) {
         return true;
@@ -59,7 +62,7 @@ function HomePage() {
     }, []);
 
     const getProjectData = () => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/projects`, {
+        fetch(`${base_url}/project/projects`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
