@@ -1,3 +1,5 @@
+const { pool } = require('../db');
+
 var express = require('express');
 const { get_project_access } = require('../Utils/AccessControl');
 var router = express.Router();
@@ -5,9 +7,9 @@ var router = express.Router();
 // Add user to project
 router.get('/add', function(req, res) {
   const project = req.query.projectName;
-  const newUser = req.query.userName;
+  const newUser = req.query.userEmail;
   const user = req.user.UID;
-
+  
   get_project_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
@@ -17,8 +19,8 @@ router.get('/add', function(req, res) {
       (project_id, role_id, user_id)
       VALUES (
         @Project,
-        (SELECT user_id FROM [user] WHERE userName = @User),
-        (SELECT role_id FROM role WHERE description = 'User')
+        (SELECT role_id FROM role WHERE description = 'User'),
+        (SELECT user_id FROM [user] WHERE email = @User)
       )
     `;
 
@@ -27,7 +29,7 @@ router.get('/add', function(req, res) {
     .input('User', newUser)
     .query(query)
     .then(() => {
-      res.send({ message: "User has been succesfully added to project!"});
+      res.send({ message: "If the user exists, they have been invited to your project."});
     })
     .catch((error) => {
       res.status(500).json({ error: `An issue occurred while attempting to add a user to ${project}`, specific: error});
@@ -36,13 +38,12 @@ router.get('/add', function(req, res) {
   .catch((error) => {
     res.status(403).json({ error: error });
   });
-
 });
 
 // Remove user from project
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
-  const oldUser = req.query.userName;
+  const oldUser = req.query.userEmail;
   const user = req.query.UID;
 
   get_project_access(user, project)
@@ -51,7 +52,7 @@ router.get('/remove', function(req, res) {
 
     const query = `
       DELETE FROM user_project
-      WHERE user_id = (SELECT user_id FROM [user] WHERE userName = @User),
+      WHERE user_id = (SELECT user_id from [user] where email = @User)
     `;
 
     pool.request()
@@ -59,7 +60,7 @@ router.get('/remove', function(req, res) {
     .input('User', oldUser)
     .query(query)
     .then(() => {
-      res.send({ message: "User has been succesfully removed from project!"});
+      res.send({ message: "If the user was part of your project, they have been removed."});
     })
     .catch((error) => {
       res.status(500).json({ error: `An issue occurred while attempting to remove a user from ${project}`, specific: error});
@@ -68,24 +69,6 @@ router.get('/remove', function(req, res) {
   .catch((error) => {
     res.status(403).json({ error: error });
   });
-});
-
-// All users in system
-router.get('/all', function(req, res) {
-
-  const query = `
-    SELECT username
-    FROM [user]
-  `;
-
-  pool.request()
-  .query(query)
-  .then((result) => {
-    res.send(result.recordset);
-  })
-  .catch(() => {
-    res.status(500).json({ error: "An error occurred while processing your request", specific: error});
-  })
 });
 
 module.exports = router;

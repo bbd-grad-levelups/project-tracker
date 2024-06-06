@@ -107,13 +107,50 @@ router.get('/change', function(req, res) {
   }
   
   get_admin_access(user, project)
-  .then(() => {
-    res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
+  .then((answer) => {
+    const projectID = answer.projectID;
+
+    const query = `
+      UPDATE [project]
+      SET project_abbreviation = @Abbreviation,
+      project_description = @Description,
+      git_link = @Git,
+      confluence_link = @Confluence
+      WHERE project_id = @ID
+    `;
+
+    pool.request()
+    .input('Abbreviation', new_abbreviation)
+    .input('Description', new_description)
+    .input('Git', new_git)
+    .input('Confluence', new_confluence)
+    .input('ID', projectID)
+    .query(query)
+    .then(() => {
+      res.send({ result: "Project information successfully changed!" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    });
   })
   .catch((error) => {
     res.status(403).json({ error: error });
   });
 
+});
+
+router.get('/admin', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+
+  get_admin_access(user, project)
+  .then(() => {
+    res.send({ isAdmin: true });
+  })
+  .catch(() => {
+    res.send({ isAdmin: false });
+  });
+  
 });
 
 // Get a list of all users in a project
@@ -125,7 +162,7 @@ router.get('/users', function(req, res) {
   .then(() => {
     
     const query = `
-      SELECT u.username
+      SELECT u.username, u.user_id
       FROM [user] u
       JOIN user_project up ON u.user_id = up.user_id
       JOIN project p ON up.project_id = p.project_id
@@ -136,9 +173,9 @@ router.get('/users', function(req, res) {
     .input('Project', project)
     .query(query)
     .then((result) => {
-      const boards = result.recordset;
+      const users = result.recordset.map((user) => { return { label: user.username, id: user.user_id }; });
 
-      res.send({boards: boards});
+      res.send(users);
     })
     .catch((error) => {
       res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
@@ -226,8 +263,8 @@ router.get('/info', function(req, res) {
     const query = `
       SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description, p.project_abbreviation
       FROM project p
-      JOIN user_project up ON p.project_id = up.project_id
-      JOIN [user] u ON up.user_id = u.user_id
+      JOIN user_project up ON p.[project_id] = up.[project_id]
+      JOIN [user] u ON up.[user_id] = u.[user_id]
       WHERE p.project_name = @Project
       AND u.UID = @User
     `;
