@@ -15,6 +15,7 @@ max: 15,
 message: 'Too many requests from this IP, please try again later.'}); 
 app.use(secondLimiter);
 
+// This is not a security issue, it is left like this on purpose for you to test with. Fight me ~ Johan V
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],

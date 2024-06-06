@@ -4,12 +4,11 @@ var express = require('express');
 const { get_project_access } = require('../Utils/AccessControl');
 var router = express.Router();
 
-// Add user to project
 router.get('/add', function(req, res) {
   const project = req.query.projectName;
   const newUser = req.query.userEmail;
   const user = req.user.UID;
-  
+
   get_project_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
@@ -32,7 +31,7 @@ router.get('/add', function(req, res) {
       res.send({ message: "If the user exists, they have been invited to your project."});
     })
     .catch((error) => {
-      res.status(500).json({ error: `An issue occurred while attempting to add a user to ${project}`, specific: error});
+      res.status(500).json({ error: `An issue occurred while attempting to add a user to ${project}`});
     });
   })
   .catch((error) => {
@@ -40,10 +39,9 @@ router.get('/add', function(req, res) {
   });
 });
 
-// Remove user from project
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
-  const oldUser = req.query.userEmail;
+  const oldUser = req.query.userID;
   const user = req.query.UID;
 
   get_project_access(user, project)
@@ -52,7 +50,7 @@ router.get('/remove', function(req, res) {
 
     const query = `
       DELETE FROM user_project
-      WHERE user_id = (SELECT user_id from [user] where email = @User)
+      WHERE user_id = @User
     `;
 
     pool.request()
@@ -63,7 +61,7 @@ router.get('/remove', function(req, res) {
       res.send({ message: "If the user was part of your project, they have been removed."});
     })
     .catch((error) => {
-      res.status(500).json({ error: `An issue occurred while attempting to remove a user from ${project}`, specific: error});
+      res.status(500).json({ error: `An issue occurred while attempting to remove a user from ${project}`});
     });
   })
   .catch((error) => {
