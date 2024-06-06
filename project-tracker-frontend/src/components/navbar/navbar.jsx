@@ -285,6 +285,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     throw new Error(JSON.parse(await response.text()).error + '.');
                 }
                 const data = await response.json();
+                getProjectData();
+                func(-2)
             }
             else if (Object.keys(project).length > 0) {
                 response = await fetch(`${base_url}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}`, {
@@ -297,6 +299,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     throw new Error(JSON.parse(await response.text()).error + '.');
                 }
                 const data = await response.json();
+                getProjectData();
+                func(-2)
             }
             else {
                 setErrorTitle('Failed to delete project');

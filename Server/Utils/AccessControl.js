@@ -70,7 +70,7 @@ async function get_project_access(uid, project) {
           });
         }
         else {
-          reject("Access control: User does not have access to project, or project does not exist. Details: " + uid + " " + project);
+          reject("Access control: User does not have access to project, or project does not exist.");
         }
 
       })
@@ -109,7 +109,7 @@ async function get_admin_access(uid, project) {
           });
         }
         else {
-          reject("User does not own project, or project does not exist. Details: " + uid + " " + project);
+          reject("User does not own project, or project does not exist.");
         }
 
       })

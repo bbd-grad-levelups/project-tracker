@@ -42,7 +42,7 @@ router.get('/add', function(req, res) {
 router.get('/remove', function(req, res) {
   const project = req.query.projectName;
   const oldUser = req.query.userID;
-  const user = req.query.UID;
+  const user = req.user.UID;
 
   get_project_access(user, project)
   .then((answer) => {
@@ -68,5 +68,36 @@ router.get('/remove', function(req, res) {
     res.status(403).json({ error: error });
   });
 });
+
+router.get('/removeme', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+
+  get_project_access(user, project)
+  .then((answer) => {
+    const projectID = answer.projectID;
+
+    const query = `
+      DELETE FROM user_project
+      WHERE user_id = (SELECT user_id FROM [user] WHERE uid = @UserUID)
+      AND project_id = @Project
+    `;
+
+    pool.request()
+    .input('Project', projectID)
+    .input('UserUID', user)
+    .query(query)
+    .then(() => {
+      res.send({ message: "You have been removed from the project."});
+    })
+    .catch((error) => {
+      res.status(500).json({ error: `An issue occurred while attempting to remove you from ${project}`});
+    });
+  })
+  .catch((error) => {
+    res.status(403).json({ error: error });
+  });
+});
+
 
 module.exports = router;

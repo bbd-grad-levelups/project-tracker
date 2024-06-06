@@ -147,7 +147,6 @@ router.get('/admin', function(req, res) {
   .catch(() => {
     res.send({ isAdmin: false });
   });
-  
 });
 
 router.get('/users', function(req, res) {
