@@ -5,20 +5,14 @@ async function pull_jira_data_all(hostname, user, token) {
 }
 
 function stripURL(url) {
-  // Regular expression to match "https://", then capture everything until ".net"
-  var regex = /^https:\/\/([^\/]+\.net)/;
-  
-  // Extract the matched part
+  var regex = /^(?:https?:\/\/)?([^\/]+\.net)(?:\/[^\/]*)?/;
   var match = url.match(regex);
-  
-  // If match is found, return the captured group, otherwise return null
   return match ? match[1] : null;
 }
 
 async function pull_jira_data(hostname, board_name, user, token) {
   let strippedUrl = stripURL(hostname);
 
-  console.log("strippe:" + hostname + " " + strippedUrl);
   let path = '/rest/api/3/search?';
   if (board_name == '') {
     path = path + 'jql=';
@@ -36,9 +30,7 @@ async function pull_jira_data(hostname, board_name, user, token) {
         'Authorization': `Basic ${Buffer.from(`${user}:${token}`).toString('base64')}`
       }
     };
-    console.log(options);
     const my_req = https.request(options, (api_res) => {
-      console.log(`Status Code: ${api_res.statusCode}`);
     
       let responseData = '';
 
@@ -61,15 +53,8 @@ async function pull_jira_data(hostname, board_name, user, token) {
 
 
 function extract_issue_count(responseData) {
-  // Parse JSON
-  const parsedData = JSON.parse(responseData);
-
-  // Extract information from issues
-  const issues = parsedData.issues.map(issue => {
-    return {
-      progress: issue.fields.status.name,
-      // Add more fields as needed
-    };
+  const issues = JSON.parse(responseData).issues.map(issue => {
+    return { progress: issue.fields.status.name };
   }).reduce((counts, issue) => {
     const stage = issue.progress;
     counts[stage] = (counts[stage] || 0) + 1;
@@ -80,18 +65,12 @@ function extract_issue_count(responseData) {
 }
 
 function extract_users(responseData) {
-  const parsedData = JSON.parse(responseData);
-
-  const users = parsedData.issues.map(issue => {
+  const users = JSON.parse(responseData).issues.map(issue => {
     if (issue.fields.assignee != null) {
-      return {
-        user: issue.fields.assignee.displayName
-      };
+      return { user: issue.fields.assignee.displayName };
     }
     else {
-      return {
-        user: 'Unassigned'
-      }
+      return { user: 'Unassigned' };
     }
   })
   .reduce((counts, issue) => {
@@ -104,15 +83,13 @@ function extract_users(responseData) {
 }
 
 function extract_boards(responseData) {
-  const parsedData = JSON.parse(responseData);
-  
-  const boards = parsedData.issues.map(issue => issue.fields.project.key)
+  const boards = JSON.parse(responseData).issues.map(issue => issue.fields.project.key)
   .filter((board, index, self) =>
     index === self.findIndex(b => (
       b === board
     ))
   );
-  console.log("Boards: " + boards);
+
   return boards;
 }
 

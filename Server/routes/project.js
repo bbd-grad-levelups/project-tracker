@@ -5,7 +5,6 @@ const { pool } = require('../db');
 const { get_project_access, get_admin_access } = require('../Utils/AccessControl.js');
 const { pull_jira_data_all, extract_issue_count, extract_users, extract_boards } = require('../Utils/Jira.js');
 
-// Add project
 router.get('/create', function(req, res) {
   const project = req.query.projectName;
   const accessUser = req.query.accessUser;
@@ -29,7 +28,6 @@ router.get('/create', function(req, res) {
   ];
 
   const errors = validations.filter(validation => validation !== null);
-
   if (errors.length > 0) {
     res.status(400).json(errors);
     return;
@@ -54,7 +52,7 @@ router.get('/create', function(req, res) {
       res.status(400).json({ error: "Project with given name already exists" });
     } 
     else {
-      res.status(500).json({ error: "An error occurred when creating the project", data: error});
+      res.status(500).json({ error: "An error occurred when creating the project"});
     }
   });
 });
@@ -74,7 +72,7 @@ router.get('/remove', function(req, res) {
       res.send({ result: "Project successfully removed" });
     })
     .catch((error) => {
-      res.status(500).json({ error: "An error occurred when removing the project", data: error});
+      res.status(500).json({ error: "An error occurred when removing the project"});
     });
   })
   .catch((error) => {
@@ -100,7 +98,6 @@ router.get('/change', function(req, res) {
   ];
 
   const errors = validations.filter(validation => validation !== null);
-
   if (errors.length > 0) {
     res.status(400).json(errors);
     return;
@@ -130,7 +127,7 @@ router.get('/change', function(req, res) {
       res.send({ result: "Project information successfully changed!" });
     })
     .catch((error) => {
-      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+      res.status(500).json({ error: 'An error occurred while processing your request'});
     });
   })
   .catch((error) => {
@@ -153,7 +150,6 @@ router.get('/admin', function(req, res) {
   
 });
 
-// Get a list of all users in a project
 router.get('/users', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
@@ -177,8 +173,8 @@ router.get('/users', function(req, res) {
 
       res.send(users);
     })
-    .catch((error) => {
-      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    .catch(() => {
+      res.status(500).json({ error: 'An error occurred while processing your request'});
     });
   })
   .catch((error) => {
@@ -186,7 +182,6 @@ router.get('/users', function(req, res) {
   });
 });
 
-// Get a list of all boards in a project.
 router.get('/boards', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
@@ -196,7 +191,7 @@ router.get('/boards', function(req, res) {
     const apiUser = answer.user;
     const apiToken = answer.token;
     const apiProject = answer.project;
-    console.log("Doing data");
+
     pull_jira_data_all(
       apiProject,
       apiUser,
@@ -204,45 +199,20 @@ router.get('/boards', function(req, res) {
     ).then((data) => {
       let boards = extract_boards(data);
 
-      res.send({ 
-        boards: boards
-      });
+      res.send({ boards: boards });
     }).catch((error) => {
-      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+      res.status(500).json({ error: 'An error occurred while processing your request'});
     });
-
-
-    
-    // const query = `
-    //   SELECT b.board_name
-    //   FROM board b
-    //   JOIN project p ON b.project_id = p.project_id 
-    //   WHERE p.project_name = @Project
-    // `;
-
-    // pool.request()
-    // .input('Project', project)
-    // .query(query)
-    // .then((result) => {
-    //   const boards = result.recordset;
-
-    //   res.send({boards: boards});
-    // })
-    // .catch((error) => {
-    //   res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
-    // });
   })
   .catch((error) => {
     res.status(403).json({ error: error });
   });
 });
 
-// Get all details about all boards in project.
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
 
-  // Test if user has access to this board
   get_project_access(user, project)
   .then((answer) => {
     const apiUser = answer.user;
@@ -257,28 +227,26 @@ router.get('/summary', function(req, res) {
       let issues = extract_issue_count(data);
       let users = extract_users(data);
 
-      console.log("summary data:", issues);
       res.send({ 
         summary: issues,
         users: users 
       });
-    }).catch((error) => {
-      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    }).catch(() => {
+      res.status(500).json({ error: 'An error occurred while processing your request'});
     });
-
   })
   .catch((error) => {
     res.status(403).json({ error: error});
   });
 });
 
-// Info of Project
 router.get('/info', function(req, res) {
   const project = req.query.projectName;
   const user = req.user.UID;
  
   get_project_access(user, project)
   .then(() => {
+
     const query = `
       SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description, p.project_abbreviation
       FROM project p
@@ -307,8 +275,8 @@ router.get('/info', function(req, res) {
         res.status(404).json({ error: "Project not found for user"});
       }
     })
-    .catch((error) => {
-      res.status(500).json({ error: "An error occurred while processing your request", specific: error});
+    .catch(() => {
+      res.status(500).json({ error: "An error occurred while processing your request"});
     });
   })
   .catch((error) => {
@@ -316,7 +284,6 @@ router.get('/info', function(req, res) {
   });
 });
 
-// Projects that user is part of 
 router.get('/projects', function(req, res) {
   const user = req.user.UID;
 
@@ -338,7 +305,6 @@ router.get('/projects', function(req, res) {
         tag: record.project_abbreviation
       }
     });
-
     res.send({ projectDetails });
   })
   .catch((error) => {

@@ -14,14 +14,12 @@ async function userRegistration(req, res, next) {
     .query(query)
     .then(async (result) => {
       if (result.recordset.length === 0) {
-        console.log(`Adding user: ${userName} ${userUID}`);
         await addUser(userName, userUID, email);
       }
 
       next();
     })
     .catch((error) => {
-      console.log(`User request failed: ${error}`);
       res.status(500).json({ error: "An error occurred during user authentication"})
     })
   }
@@ -37,13 +35,7 @@ async function addUser(userName, UID, email) {
   .input('username', userName)
   .input('uid', UID)
   .input('email', email)
-  .query(query)
-  .then((insertResult) => {
-    console.log('New user created:', insertResult);
-  })
-  .catch((err) => {
-    console.log("Could not register user: " + err);
-  });
+  .query(query);
 }
 
 module.exports = userRegistration;

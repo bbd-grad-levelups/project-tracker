@@ -37,7 +37,6 @@ async function get_board_access(uid, project, boardName) {
 
       })
       .catch((error) => {
-        console.log("Database call error: " + error);
         reject("Database error in get_board_access: " + error);
       });
 
@@ -76,7 +75,6 @@ async function get_project_access(uid, project) {
 
       })
       .catch((error) => {
-        console.log("Database call error: " + error);
         reject("Database error (get_project_access): " + error);
       });
   });
