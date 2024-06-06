@@ -36,7 +36,7 @@ function ProjectGrid({ projectName = '' }) {
     const [boards, setBoards] = useState([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/boards/?projectName=${projectName}`, {
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/boards?projectName=${projectName}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -52,7 +52,7 @@ function ProjectGrid({ projectName = '' }) {
 
     const [projectLinks, setProjectLinks] = useState([]);
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_BASE_URL}/project/info/?projectName=${projectName}`, {
+        fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${projectName}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
         })
@@ -69,7 +69,7 @@ function ProjectGrid({ projectName = '' }) {
     const [projectMembers, setProjectMembers] = useState([]);
     useEffect(() => {
         if (board == 'All Boards') {
-            fetch(`${import.meta.env.VITE_BASE_URL}/project/summary/?projectName=${projectName}`, {
+            fetch(`${import.meta.env.VITE_BASE_URL}/project/summary?projectName=${projectName}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })
@@ -82,7 +82,7 @@ function ProjectGrid({ projectName = '' }) {
                     console.log(err.message);
                 });
         } else {
-            fetch(`${import.meta.env.VITE_BASE_URL}/board/summary/?projectName=${projectName}&boardName=${board}`, {
+            fetch(`${import.meta.env.VITE_BASE_URL}/board/summary?projectName=${projectName}&boardName=${board}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${sessionStorage.getItem("idToken")}` }
             })

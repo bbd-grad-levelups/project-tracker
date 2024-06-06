@@ -1,5 +1,5 @@
 import './navbar.css'
-import { useMediaQuery, Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
+import { useMediaQuery, Alert, Tooltip, Menu, MenuItem, ListItemIcon, Button, Typography, Box, AppBar, Toolbar, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Autocomplete, IconButton } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import logo from "../../assets/project-logo.png";
 import React, { useState, useEffect } from 'react';
@@ -17,13 +17,17 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const [open, setOpen] = useState(false);
     const [memberOpen, setMemberOpen] = useState(false);
     const [memberData, setMemberData] = useState(undefined);
+    const [selectedMember, setSelectedMember] = useState(undefined);
     const [errorOpen, setErrorOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [projectData, setProjectData] = useState(undefined);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(undefined);
     const projectOpen = Boolean(anchorEl);
     const [userInfo, setUserInfo] = useState(undefined);
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
+
+    const [errorTitle, setErrorTitle] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const getUserInfo = async () => {
         try {
@@ -38,13 +42,16 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             setUserInfo(data);
         } catch (error) {
             console.error('Error:', error);
+            setErrorTitle('Failed to get user info');
+            setErrorMessage('Please try again later.\nError: ' + error.message);
+            setErrorOpen(true);
         }
     }
 
     const handleClickOpen = async () => {
         if (Object.keys(project).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}}`, {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/info?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -53,16 +60,89 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 const data = await response.json();
                 console.log('Success:', data);
                 setProjectData(data);
+                setOpen(true);
             } catch (error) {
                 console.error('Error:', error);
+                setErrorTitle('Failed to get project info');
+                setErrorMessage('Please try again later.\nError: ' + error.message);
+                setErrorOpen(true);
             }
-
-            setOpen(true);
         }
         else {
+            setErrorTitle('No Project Selected');
+            setErrorMessage('Please select a project to use this function.');
             setErrorOpen(true);
         }
     };
+
+    const updateProject = async (input) => {
+        if (Object.keys(project).length > 0 && Object.keys(input).length > 0) {
+            try {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/change?projectName=${project.name}`
+                    + `&abbreviation=${input.projectAbbreviation}`
+                    + `&description=${input.projectDescription}`
+                    + `&confluenceLink=${input.confluenceLink}`
+                    + `&gitLink=${input.githubLink}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
+                    },
+                });
+                const data = await response.json();
+                console.log('Success:', data);
+                console.log(input);
+                setProjectData(data);
+            } catch (error) {
+                console.error('Error:', error);
+                setErrorTitle('Failed to update project');
+                setErrorMessage('Please try again later.\nError: ' + error.message);
+                setErrorOpen(true);
+            }
+        }
+        else {
+            setErrorTitle('No Project Selected');
+            setErrorMessage('Please select a project to use this function.');
+            setErrorOpen(true);
+        }
+    }
+
+    const removeMember = async (input) => {
+        if (!input) {
+            setErrorTitle('No Member Selected');
+            setErrorMessage('Please select a member to use this function.');
+            setErrorOpen(true);
+            return;
+        }
+        if (Object.keys(project).length > 0 && Object.keys(input).length > 0) {
+            if (input.label === userInfo.nickname && isAdmin) {
+                setErrorTitle('Failed to remove member');
+                setErrorMessage('You cannot remove a project admin');
+                setErrorOpen(true);
+            }
+            else {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userID=${input.id}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
+                        },
+                    });
+                    const data = await response.json();
+                    console.log('Success:', data);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setErrorTitle('Failed to remove member');
+                    setErrorMessage('Please try again later.\nError: ' + error.message);
+                    setErrorOpen(true);
+                }
+            }
+        }
+        else {
+            setErrorTitle('No Project Selected');
+            setErrorMessage('Please select a project to use this function.');
+            setErrorOpen(true);
+        }
+    }
 
     const handleClose = () => {
         setOpen(false);
@@ -75,21 +155,24 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
     const handleMemberClickOpen = async () => {
         if (Object.keys(project).length > 0) {
             try {
-                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/users?projectName=${project.name}}`, {
+                const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/users?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
                 const data = await response.json();
-                console.log('Success:', data);
                 setMemberData(data);
+                setMemberOpen(true);
             } catch (error) {
-                console.error('Error:', error);
+                setErrorTitle('Failed to fetch project members');
+                setErrorMessage('Please try again later.\nError: ' + error.message);
+                setErrorOpen(true);
             }
-            setMemberOpen(true);
         }
         else {
+            setErrorTitle('No Project Selected');
+            setErrorMessage('Please select a project to use this function.');
             setErrorOpen(true);
         }
 
@@ -104,6 +187,8 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
             setDeleteOpen(true);
         }
         else {
+            setErrorTitle('No Project Selected');
+            setErrorMessage('Please select a project to use this function.');
             setErrorOpen(true);
         }
 
@@ -117,30 +202,32 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
         try {
             let response;
             if (isAdmin && Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/remove?projectName=${project.name}}`, {
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/remove?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'Bearer' + sessionStorage.getItem("idToken")
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
                 const data = await response.json();
-                console.log('Success:', data);
             }
             else if (Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}}`, {
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'Bearer' + sessionStorage.getItem("idToken")
+                        'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
                 const data = await response.json();
-                console.log('Success:', data);
             }
             else {
+                setErrorTitle('Failed to delete project');
+                setErrorMessage('An error occurred. Please try again later.');
                 setErrorOpen(true);
             }
         } catch (error) {
-            console.error('Error:', error);
+            setErrorTitle('Failed to delete project');
+            setErrorMessage('Please try again later.\nError: ' + error.message);
+            setErrorOpen(true);
         }
     }
 
@@ -211,10 +298,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         event.preventDefault();
                         const formData = new FormData(event.currentTarget);
                         const formJson = Object.fromEntries(formData.entries());
-                        const projectName = formJson.projectName;
-                        console.log(projectName);
-                        console.log(formJson);
-                        //TODO: update project
+                        updateProject(formJson);
                         handleClose();
                     },
                 }}
@@ -222,10 +306,10 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 <DialogTitle>Edit Project</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Please fill in any fields you would like to update.
+                        Please modify any fields you would like to update.
                     </DialogContentText>
                     <TextField
-                        inputProps={{ maxLength: 5 }}
+                        inputProps={{ maxLength: 8 }}
                         required
                         name="projectAbbreviation"
                         label="Project Abbreviation"
@@ -239,7 +323,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     />
                     <TextField
                         inputProps={{ maxLength: 2048 }}
-                        required
                         name="projectDescription"
                         label="Project Description"
                         inputMode="text"
@@ -258,7 +341,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         label="Confluence Link"
                         inputMode="url"
                         fullWidth={true}
-                        required
                         type="url"
                         autoFocus
                         margin="dense"
@@ -271,7 +353,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         label="Github Link"
                         inputMode="url"
                         fullWidth={true}
-                        required
                         type="url"
                         autoFocus
                         margin="dense"
@@ -292,12 +373,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     component: 'form',
                     onSubmit: (event) => {
                         event.preventDefault();
-                        const formData = new FormData(event.currentTarget);
-                        const formJson = Object.fromEntries(formData.entries());
-                        const projectName = formJson.projectName;
-                        console.log(projectName);
-                        console.log(formJson);
-                        //TODO: update members
+                        removeMember(selectedMember);
                         handleMemberClose();
                     },
                 }}
@@ -310,7 +386,10 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     <Autocomplete
                         fullWidth={true}
                         id="member-select"
-                        options={['test1', 'test2']}
+                        options={memberData}
+                        onChange={(event, newValue) => {
+                            setSelectedMember(newValue);
+                        }}
                         sx={{ mt: 2 }}
                         renderInput={(params) => <TextField {...params} label="Member" />}
                     />
@@ -354,11 +433,11 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 aria-describedby="error-dialog-description"
             >
                 <DialogTitle id="error-dialog-title">
-                    {"No project selected"}
+                    {errorTitle}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="error-dialog-description">
-                        Please select a project to use this function.
+                        {errorMessage}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
