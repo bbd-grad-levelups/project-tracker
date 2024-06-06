@@ -1,3 +1,5 @@
+const { pool } = require('../db');
+
 var express = require('express');
 const { get_project_access } = require('../Utils/AccessControl');
 var router = express.Router();
@@ -7,7 +9,7 @@ router.get('/add', function(req, res) {
   const project = req.query.projectName;
   const newUser = req.query.userEmail;
   const user = req.user.UID;
-
+  
   get_project_access(user, project)
   .then((answer) => {
     const projectID = answer.projectID;
@@ -17,8 +19,8 @@ router.get('/add', function(req, res) {
       (project_id, role_id, user_id)
       VALUES (
         @Project,
-        (SELECT user_id FROM [user] WHERE email = @newUser),
-        (SELECT role_id FROM role WHERE description = 'User')
+        (SELECT role_id FROM role WHERE description = 'User'),
+        (SELECT user_id FROM [user] WHERE email = @User)
       )
     `;
 
