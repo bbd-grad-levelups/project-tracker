@@ -194,7 +194,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 const data = await response.json();
             } catch (error) {
                 setErrorTitle('Failed to add member');
-                setErrorMessage('Please try again later.\nError: ' + error.message);
+                setErrorMessage('Please check if user is registered and try again later.\nError: ' + error.message);
                 setErrorOpen(true);
             }
         }
