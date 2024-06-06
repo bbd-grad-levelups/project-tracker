@@ -25,7 +25,7 @@ const ThemedBox = () => {
                 boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)'
             }}
         >
-            <img src='..\..\assets\project-logo.png' alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
+            <img src={logo} alt='login-symbol' style={{ height: 13 + 'rem', mixBlendMode: 'unset', marginTop: 10 }}></img>
             <Typography variant='h5' sx={{ mt: 5, mb: 3 }}>Welcome to</Typography>
             <Typography variant='h4' style={{ fontWeight: 'bold' }} sx={{ mb: 5 }}>Project-Tracker!</Typography>
             <LoginButton />
