@@ -36,7 +36,6 @@ function CreateProject({ setSelectedItem = () => { console.log('No function prov
         });
 
         console.log(params.toString());
-        console.log(`${base_url}`);
         try {
             const response = await fetch(`${base_url}/project/create?${params.toString()}`, {
                 method: 'GET',
