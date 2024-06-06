@@ -8,8 +8,9 @@ Please proceed to the **Prerequisites** section
 Before you begin, ensure you have met the following requirements:
 
 - [Frontend] You have installed [Node.js](https://nodejs.org/) (which includes npm).
-- [Frontend] You have localhost:5173 available for debugging as that is Vite's default for development 
-- [Frontend] You have a .env file in ./project-tracker/project-tracker-frontend folder with the following => VITE_BASE_URL: [-insert localhost url here-]
+- [Frontend] You have localhost:5173 available for debugging as that is Vite's default for development.
+- [Frontend] Ensure the variable **const local** is set to true for local testing.
+- [Frontend] You have a *.env* file in ./project-tracker/project-tracker-frontend folder with the following => VITE_BASE_URL: "http://localhost:3000". This points to the local server.
 
 ## Installation
 
