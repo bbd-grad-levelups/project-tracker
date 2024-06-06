@@ -1,7 +1,7 @@
-# WELCOME TO PROJECT TRACKER
-## Description
+# WELCOME TO PROJECT TRACKER FRONTEND
+This is a website that tracks the progress of your jira board and provides you with basic statistics too. It also has the ability to store URLs of the GitHub and Confluence of the relevant project! 
 
-
+Please proceed to the **Prerequisites** section
 
 ## Prerequisites
 
@@ -9,6 +9,7 @@ Before you begin, ensure you have met the following requirements:
 
 - [Frontend] You have installed [Node.js](https://nodejs.org/) (which includes npm).
 - [Frontend] You have localhost:5173 available for debugging as that is Vite's default for development 
+- [Frontend] You have a .env file in ./project-tracker/project-tracker-frontend folder with the following => VITE_BASE_URL: [-insert localhost url here-]
 
 ## Installation
 
@@ -30,11 +31,11 @@ To install and run this project locally, follow these steps:
     ```bash
     npm install
     ```
-4. 
+4. Now run the app in dev mode
+    ```bash
+    npm run dev
+    ```
+    This will launch on localhost:5173
+    
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<!-- Nedd to make .env file that has VITE_BASE_URL: [-insert localhost url here-] -->

@@ -1,5 +1,4 @@
 const { pool } = require('../db');
-const sql = require('mssql');
 
 var express = require('express');
 var router = express.Router();
@@ -25,7 +24,8 @@ router.get('/summary', function(req, res) {
       apiBoard,
       apiUser,
       apiToken
-    ).then((data) => {
+    )
+    .then((data) => {
       let issues = extract_issue_count(data);
       let users = extract_users(data);
 
@@ -35,14 +35,13 @@ router.get('/summary', function(req, res) {
         summary: issues, 
         users: users
       });
-    }).catch((error) => {
-      console.log("Error: ", error);
-      res.status(500).json({ error: 'An error occurred while processing your request'});
+    })
+    .catch((error) => {
+      res.status(500).json({ error: 'An error occurred while processing your request.', specific: error});
     });
 
   })
   .catch((error) => {
-    console.log("error when getting board: " + error);
     res.status(403).json({ error: error});
   });
 });
@@ -70,18 +69,14 @@ router.get('/create', function(req, res) {
     .input('board_key', boardKey)
     .query(query)
     .then((result) => {
-      console.log("Result from insert? " + result);
       res.json({ message: `Board ${board} has been successfully added to the project.`});
     })
     .catch((error) => {
-      console.log("Error while creating new board: " + error);
-      res.status(500).json({ error: "System error", data: error});
+      res.status(500).json({ error: 'An error occurred while processing your request.', specific: error});
     });
-
   })
   .catch((error) => {
-    console.log("User without access tried making project board: " + error);
-    res.status(403).json({ error: error});
+    res.status(403).json({ error: error });
   });
 });
 
@@ -101,17 +96,14 @@ router.get('/remove', function(req, res) {
     .input('board', board)
     .query(query)
     .then((result) => {
-      console.log("Result from insert? " + result);
       res.json({ message: `Board ${board} has been successfully removed from the project.`});
     })
     .catch((error) => {
-      console.log("Error while removing board: " + error);
-      res.status(500).json({ error: "System error"});
+      res.status(500).json({ error: 'An error occurred while processing your request.', specific: error});
     });
 
   })
   .catch((error) => {
-    console.log("User without access tried removing a board from a project: " + error);
     res.status(403).json({ error: error});
   });
 });

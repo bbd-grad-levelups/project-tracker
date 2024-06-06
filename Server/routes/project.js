@@ -46,21 +46,17 @@ router.get('/create', function(req, res) {
   .input('Conf', confluenceLink)
   .input('User', user)
   .execute('CreateProject')
-  .then((data) => {
-    console.log("Project created: " + data);
+  .then(() => {
     res.send({ result: "Project successfully created for user " + req.user.userName});
   })
   .catch((error) => {
-    console.log("Failed project creation: " + error);
     if (error.number === 51000) {
       res.status(400).json({ error: "Project with given name already exists" });
     } 
     else {
       res.status(500).json({ error: "An error occurred when creating the project", data: error});
-
     }
   });
-
 });
 
 // Remove a project
@@ -78,12 +74,11 @@ router.get('/remove', function(req, res) {
       res.send({ result: "Project successfully removed" });
     })
     .catch((error) => {
-      console.log("Failed project deletion: " + error);
       res.status(500).json({ error: "An error occurred when removing the project", data: error});
     });
   })
-  .catch(() => {
-    res.status(404).json({ error: "User does not have write access to project, or project doesn't exist" });
+  .catch((error) => {
+    res.status(403).json({ error: error });
   });
 
 });
@@ -91,21 +86,17 @@ router.get('/remove', function(req, res) {
 // Change project details
 router.get('/change', function(req, res) {
   const project = req.query.projectName;
-  const new_name = req.query.newName;
-  const new_description = req.query.description;
   const new_abbreviation = req.query.abbreviation;
-  const new_jira = req.query.jiraLink;
-  const new_git = req.query.gitLink;
+  const new_description = req.query.description;
   const new_confluence = req.query.confluenceLink;
+  const new_git = req.query.gitLink;
   const user = req.user.UID;
 
   const validations = [
-    validateParameterLength(new_name, 255, "Project Name"),
-    validateParameterLength(new_description, 2048, "Project Description"),
     validateParameterLength(new_abbreviation, 8, "Project Abbreviation"),
-    validateParameterLength(new_jira, 255, "JIRA Link"),
-    validateParameterLength(new_git, 255, "Git Link"),
-    validateParameterLength(new_confluence, 255, "Confluence Link")
+    validateParameterLength(new_description, 2048, "Project Description"),
+    validateParameterLength(new_confluence, 255, "Confluence Link"),
+    validateParameterLength(new_git, 255, "Git Link")
   ];
 
   const errors = validations.filter(validation => validation !== null);
@@ -116,13 +107,50 @@ router.get('/change', function(req, res) {
   }
   
   get_admin_access(user, project)
-  .then(() => {
-    res.send({ error: "Unimplemented, sorry haha. Yell at me when you find this"});
+  .then((answer) => {
+    const projectID = answer.projectID;
+
+    const query = `
+      UPDATE [project]
+      SET project_abbreviation = @Abbreviation,
+      project_description = @Description,
+      git_link = @Git,
+      confluence_link = @Confluence
+      WHERE project_id = @ID
+    `;
+
+    pool.request()
+    .input('Abbreviation', new_abbreviation)
+    .input('Description', new_description)
+    .input('Git', new_git)
+    .input('Confluence', new_confluence)
+    .input('ID', projectID)
+    .query(query)
+    .then(() => {
+      res.send({ result: "Project information successfully changed!" });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
+    });
   })
-  .catch(() => {
-    res.status(404).json({ error: "User does not have access to project, or project does not exist"})
+  .catch((error) => {
+    res.status(403).json({ error: error });
   });
 
+});
+
+router.get('/admin', function(req, res) {
+  const project = req.query.projectName;
+  const user = req.user.UID;
+
+  get_admin_access(user, project)
+  .then(() => {
+    res.send({ isAdmin: true });
+  })
+  .catch(() => {
+    res.send({ isAdmin: false });
+  });
+  
 });
 
 // Get a list of all users in a project
@@ -134,7 +162,7 @@ router.get('/users', function(req, res) {
   .then(() => {
     
     const query = `
-      SELECT u.username
+      SELECT u.username, u.user_id
       FROM [user] u
       JOIN user_project up ON u.user_id = up.user_id
       JOIN project p ON up.project_id = p.project_id
@@ -145,20 +173,17 @@ router.get('/users', function(req, res) {
     .input('Project', project)
     .query(query)
     .then((result) => {
-      const boards = result.recordset;
+      const users = result.recordset.map((user) => { return { label: user.username, id: user.user_id }; });
 
-      res.send({boards: boards});
+      res.send(users);
     })
     .catch((error) => {
-      console.log("Error: ", error);
-      res.status(500).json({ error: 'An error occurred while processing your request'});
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
     });
   })
   .catch((error) => {
-    console.log("error when getting boards: " + error);
-    res.status(403).json({ error: 'User does not have access to project, or project does not exist', specific: error});
+    res.status(403).json({ error: error });
   });
-
 });
 
 // Get a list of all boards in a project.
@@ -185,15 +210,12 @@ router.get('/boards', function(req, res) {
       res.send({boards: boards});
     })
     .catch((error) => {
-      console.log("Error: ", error);
-      res.status(500).json({ error: 'An error occurred while processing your request'});
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
     });
   })
   .catch((error) => {
-    console.log("error when getting boards: " + error);
-    res.status(403).json({ error: 'User does not have access to project, or project does not exist'});
+    res.status(403).json({ error: error });
   });
-
 });
 
 // Get all details about all boards in project.
@@ -215,20 +237,18 @@ router.get('/summary', function(req, res) {
     ).then((data) => {
       let issues = extract_issue_count(data);
       let users = extract_users(data);
-      // Expand summary data here.
+
       console.log("summary data:", issues);
       res.send({ 
         summary: issues,
         users: users 
       });
     }).catch((error) => {
-      console.log("Error: ", error);
-      res.status(500).json({ error: 'An error occurred while processing your request'});
+      res.status(500).json({ error: 'An error occurred while processing your request', specific: error});
     });
 
   })
   .catch((error) => {
-    console.log("error when getting board: " + error);
     res.status(403).json({ error: error});
   });
 });
@@ -241,10 +261,10 @@ router.get('/info', function(req, res) {
   get_project_access(user, project)
   .then(() => {
     const query = `
-      SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description
+      SELECT p.jira_link, p.git_link, p.confluence_link, p.project_description, p.project_abbreviation
       FROM project p
-      JOIN user_project up ON p.project_id = up.project_id
-      JOIN [user] u ON up.user_id = u.user_id
+      JOIN user_project up ON p.[project_id] = up.[project_id]
+      JOIN [user] u ON up.[user_id] = u.[user_id]
       WHERE p.project_name = @Project
       AND u.UID = @User
     `;
@@ -258,6 +278,7 @@ router.get('/info', function(req, res) {
         res.send({ 
           projectName : project,
           description: result.recordset[0].project_description,
+          abbreviation: result.recordset[0].project_abbreviation,
           jira: result.recordset[0].jira_link,
           git: result.recordset[0].git_link,
           confluence: result.recordset[0].confluence_link
@@ -268,14 +289,12 @@ router.get('/info', function(req, res) {
       }
     })
     .catch((error) => {
-      console.log("Issue with fetching user projects: " + error);
-      res.status(500).json({ error: "An error occurred while processing your request"});
+      res.status(500).json({ error: "An error occurred while processing your request", specific: error});
     });
   })
-  .catch(() => {
-    res.status(400).json({ error: "Project does not exist, or user does not have access"});
+  .catch((error) => {
+    res.status(403).json({ error: error });
   });
-
 });
 
 // Projects that user is part of 
@@ -300,21 +319,12 @@ router.get('/projects', function(req, res) {
         tag: record.project_abbreviation
       }
     });
-    console.log(`User ${req.user.userName} has access to: ${result.recordset}`);
-    if (result.recordset.length > 0) {
-      res.send({ 
-        projectDetails
-      });
-    }
-    else {
-      res.status(404).json({ error: "No projects found for user"});
-    }
+
+    res.send({ projectDetails });
   })
   .catch((error) => {
-    console.log("Could not access user projects: " + error);
-    res.status(500).json({ error: "An error occurred while processing your request"});
+    res.status(403).json({ error: error });
   });
-
 });
 
 function validateParameterLength(parameter, maxLength, paramName) {

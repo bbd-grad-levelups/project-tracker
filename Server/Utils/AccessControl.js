@@ -32,13 +32,13 @@ async function get_board_access(uid, project, boardName) {
           });
         }
         else {
-          reject("User does not have access to board, or board does not exist.");
+          reject("User does not have access to board, or board does not exist. Details: " + uid + " " + project + " " + boardName);
         }
 
       })
       .catch((error) => {
         console.log("Database call error: " + error);
-        reject();
+        reject("Database error in get_board_access: " + error);
       });
 
   });
@@ -71,14 +71,13 @@ async function get_project_access(uid, project) {
           });
         }
         else {
-          console.log("Access control: User does not have access to project, or project does not exist. " + project + " " + uid)
-          reject("Access control: User does not have access to project, or project does not exist");
+          reject("Access control: User does not have access to project, or project does not exist. Details: " + uid + " " + project);
         }
 
       })
       .catch((error) => {
         console.log("Database call error: " + error);
-        reject();
+        reject("Database error (get_project_access): " + error);
       });
   });
 }
@@ -112,13 +111,12 @@ async function get_admin_access(uid, project) {
           });
         }
         else {
-          reject("User does not own project, or project does not exist");
+          reject("User does not own project, or project does not exist. Details: " + uid + " " + project);
         }
 
       })
       .catch((error) => {
-        console.log("Database call error: " + error);
-        reject();
+        reject("Database error (get_admin_access): " + error);
       });
   });
 }
