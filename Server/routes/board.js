@@ -4,7 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 const { pull_jira_data, extract_issue_count, extract_users } = require('../Utils/Jira.js');
-const { get_board_access, get_admin_access} = require('../Utils/AccessControl.js');
+const { get_project_access, get_admin_access} = require('../Utils/AccessControl.js');
 
 router.get('/summary', function(req, res) {
   const project = req.query.projectName;
@@ -12,7 +12,7 @@ router.get('/summary', function(req, res) {
   const user = req.user.UID;
   // Test if user has access to this board
 
-  get_board_access(user, project, board)
+  get_project_access(user, project)
   .then((answer) => {
     const apiUser = answer.user;
     const apiToken = answer.token;
@@ -21,7 +21,7 @@ router.get('/summary', function(req, res) {
 
     pull_jira_data(
       apiProject,
-      apiBoard,
+      board,
       apiUser,
       apiToken
     )
