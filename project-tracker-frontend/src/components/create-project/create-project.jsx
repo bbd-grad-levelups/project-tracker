@@ -2,7 +2,7 @@ import "./create-project.css";
 import { Container, Stack, Typography, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-const local = true;
+const local = false;
 const base_url = local ? "http://localhost:3000" : "http://project-tracker-env.eba-jzngmqnc.eu-west-1.elasticbeanstalk.com"
 function CreateProject({ setSelectedItem = () => { console.log('No function provided') }, setProjects = () => { console.log('No function provided') }, projects = [] }) {
 
