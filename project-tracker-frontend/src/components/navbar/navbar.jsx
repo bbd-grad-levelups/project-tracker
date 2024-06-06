@@ -284,9 +284,10 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     throw new Error(JSON.parse(await response.text()).error + '.');
                 }
                 const data = await response.json();
+                getProjectData();
             }
             else if (Object.keys(project).length > 0) {
-                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/remove?projectName=${project.name}&userName=${userInfo.nickname}`, {
+                response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/removeme?projectName=${project.name}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
@@ -296,6 +297,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     throw new Error(JSON.parse(await response.text()).error + '.');
                 }
                 const data = await response.json();
+                getProjectData();
             }
             else {
                 setErrorTitle('Failed to delete project');
