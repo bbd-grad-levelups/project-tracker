@@ -285,6 +285,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 }
                 const data = await response.json();
                 getProjectData();
+                func(-2)
             }
             else if (Object.keys(project).length > 0) {
                 response = await fetch(`${import.meta.env.VITE_BASE_URL}/user/removeme?projectName=${project.name}`, {
@@ -298,6 +299,7 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                 }
                 const data = await response.json();
                 getProjectData();
+                func(-2)
             }
             else {
                 setErrorTitle('Failed to delete project');
