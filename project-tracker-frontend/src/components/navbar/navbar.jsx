@@ -39,11 +39,12 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                     'Authorization': 'Bearer ' + sessionStorage.getItem("token")
                 },
             });
+            if (!response.ok) {
+                throw new Error(JSON.parse(await response.text()).error + '.');
+            }
             const data = await response.json();
-            // console.log('Success:', data);
             setUserInfo(data);
         } catch (error) {
-            console.error('Error:', error);
             setErrorTitle('Failed to get user info');
             setErrorMessage('Please try again later.\nError: ' + error.message);
             setErrorOpen(true);
@@ -52,7 +53,6 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
 
     const getAdmin = async () => {
         if (Object.keys(project).length > 0) {
-            console.log('Getting admin');
             try {
                 const response = await fetch(`${import.meta.env.VITE_BASE_URL}/project/admin?projectName=${project.name}`, {
                     method: 'GET',
@@ -60,11 +60,12 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
-                console.log('Success:', data);
                 setIsAdmin(data.isAdmin);
             } catch (error) {
-                console.error('Error:', error);
                 setErrorTitle('Failed to get user access info for project');
                 setErrorMessage('Please try again later.\nError: ' + error.message);
                 setErrorOpen(true);
@@ -84,12 +85,13 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
-                console.log('Success:', data);
                 setProjectData(data);
                 setOpen(true);
             } catch (error) {
-                console.error('Error:', error);
                 setErrorTitle('Failed to get project info');
                 setErrorMessage('Please try again later.\nError: ' + error.message);
                 setErrorOpen(true);
@@ -115,12 +117,12 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
-                console.log('Success:', data);
-                console.log(input);
                 setProjectData(data);
             } catch (error) {
-                console.error('Error:', error);
                 setErrorTitle('Failed to update project');
                 setErrorMessage('Please try again later.\nError: ' + error.message);
                 setErrorOpen(true);
@@ -154,10 +156,10 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                             'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                         },
                     });
-                    const data = await response.json();
-                    console.log('Success:', data);
+                    if (!response.ok) {
+                        throw new Error(JSON.parse(await response.text()).error + '.');
+                    }
                 } catch (error) {
-                    console.error('Error:', error);
                     setErrorTitle('Failed to remove member');
                     setErrorMessage('Please try again later.\nError: ' + error.message);
                     setErrorOpen(true);
@@ -186,11 +188,11 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
-                console.log('Success:', data);
-                console.log(input);
             } catch (error) {
-                console.error('Error:', error);
                 setErrorTitle('Failed to add member');
                 setErrorMessage('Please try again later.\nError: ' + error.message);
                 setErrorOpen(true);
@@ -220,6 +222,9 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
                 setMemberData(data);
                 setMemberOpen(true);
@@ -274,6 +279,9 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
             }
             else if (Object.keys(project).length > 0) {
@@ -283,6 +291,9 @@ function NavBar({ darkMode, toggleDarkTheme, func = () => { console.log('No func
                         'Authorization': 'Bearer ' + sessionStorage.getItem("idToken")
                     },
                 });
+                if (!response.ok) {
+                    throw new Error(JSON.parse(await response.text()).error + '.');
+                }
                 const data = await response.json();
             }
             else {
